@@ -24,6 +24,16 @@ Desde la carpeta CMPC-LIBROS, en un terminal:
 
 docker-compose up
 
+## Para instalar nuevos paquetes:
+
+# Eliminar el node modules:
+
+rm -rf backend/node_modules
+
+# Luego reconstruir el contenedor:
+
+docker-compose up --build
+
 ## Supuestos:
 
 Se tienen dos gráficos de productos:
@@ -34,7 +44,7 @@ Se tienen dos gráficos de productos:
 - Total de productos (tipos de productos)
 - Ingresos totales
 
-Los productos son obtenidos por medio de endpoints de productos, desde el backend, y las metricas son otro conjunto de endpoints (en este caso solo con la opcion de obtenerlas)
+Los libros son obtenidos por medio de endpoints de productos, desde el backend, y las metricas son otro conjunto de endpoints (en este caso solo con la opcion de obtenerlas)
 
 ![Graficos](img1.png)
 ![Tabla](img2.png)
@@ -42,9 +52,7 @@ Los productos son obtenidos por medio de endpoints de productos, desde el backen
 ## Documentación utilizada
 
 - Nestjs - [https://docs.nestjs.com/](https://docs.nestjs.com/)
-- Redux - [https://redux.js.org/introduction/getting-started](https://redux.js.org/introduction/getting-started)
 - Material UI [https://mui.com/material-ui/getting-started/](https://mui.com/material-ui/getting-started/)
-- Plotly JavaScript - [https://plotly.com/javascript/](https://plotly.com/javascript/)
 
 ## Autor
 
