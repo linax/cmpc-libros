@@ -58,6 +58,23 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
+## Database
+
+# Create migrations and seeds
+
+```bash
+
+$ npx sequelize-cli migration:generate --name create-books
+$ npx sequelize-cli seed:generate --name seed-books
+```
+
+# Run migrations and seeds: ???????
+
+```bash
+$ docker exec -it backend sh -c "npx sequelize-cli db:migrate"
+$ docker exec -it backend sh -c "npx sequelize-cli db:seed:all"
+```
+
 ## Support
 
 Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
