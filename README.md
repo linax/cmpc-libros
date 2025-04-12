@@ -26,11 +26,12 @@ docker-compose up
 
 ## Para instalar nuevos paquetes:
 
-# Eliminar el node modules:
+### Eliminar el node modules:
 
 rm -rf backend/node_modules
+rm -rf frontend/node_modules
 
-# Luego reconstruir el contenedor:
+### Luego reconstruir el contenedor:
 
 docker-compose up --build
 
@@ -65,6 +66,7 @@ Los libros son obtenidos por medio de endpoints, desde el backend.
 
 - Nestjs - [https://docs.nestjs.com/](https://docs.nestjs.com/)
 - Material UI [https://mui.com/material-ui/getting-started/](https://mui.com/material-ui/getting-started/)
+- React - [https://react.dev/reference/react](https://react.dev/reference/react)
 
 ## Autor
 
