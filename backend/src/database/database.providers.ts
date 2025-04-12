@@ -1,7 +1,7 @@
 import { Sequelize } from 'sequelize-typescript';
 import { ConfigService } from '@nestjs/config';
 import { Book } from '../books/models/book.model';
-//import { User } from '../modules/users/models/user.model';
+import { User } from 'src/users/models/user.model';
 
 export const databaseProviders = [
   {
@@ -21,7 +21,7 @@ export const databaseProviders = [
         },
       });
 
-      sequelize.addModels([Book]); //, User]);
+      sequelize.addModels([Book, User]);
       await sequelize.sync();
       return sequelize;
     },

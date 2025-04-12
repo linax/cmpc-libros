@@ -25,6 +25,7 @@ export enum BookGenre {
 @Table({
   tableName: 'books',
   timestamps: true,
+  paranoid: true,
 })
 export class Book extends Model {
   @Column({

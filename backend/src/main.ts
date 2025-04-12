@@ -1,12 +1,12 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
-//import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-//import * as morgan from 'morgan';
-//import * as fs from 'fs';
-//import * as path from 'path';
+import * as morgan from 'morgan';
+import * as fs from 'fs';
+import * as path from 'path';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -29,14 +29,14 @@ SwaggerModule.setup('api-swagger', app, document);
   const configService = app.get(ConfigService);
 
   // Use Winston for logging
-  //app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
+  app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
 
   // Set up Morgan HTTP request logger
-  /*const accessLogStream = fs.createWriteStream(
+  const accessLogStream = fs.createWriteStream(
     path.join(__dirname, '../logs/access.log'),
     { flags: 'a' },
-  );*/
-  //app.use(morgan('combined', { stream: accessLogStream }));
+  );
+  app.use(morgan('combined', { stream: accessLogStream }));
 
   // Set up global validation pipe
   app.useGlobalPipes(
