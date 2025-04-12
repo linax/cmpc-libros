@@ -1,42 +1,61 @@
-import { IsString, IsOptional, IsEnum, IsBoolean } from 'class-validator';
-import { Transform } from 'class-transformer';
+import { IsString, IsOptional, IsEnum, IsBoolean, IsNumber } from 'class-validator';
+import { Transform, Type } from 'class-transformer';
 import { BookGenre } from '../models/book.model';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class QueryBooksDto {
   @IsOptional()
   @IsString()
+  @ApiPropertyOptional({ description: 'Filtro por título del libro' })
   title?: string;
 
   @IsOptional()
   @IsString()
+  @ApiPropertyOptional({ description: 'Filtro por autor del libro' })
   author?: string;
 
   @IsOptional()
   @IsString()
+  @ApiPropertyOptional({ description: 'Filtro por editorial' })
   publisher?: string;
 
   @IsOptional()
   @IsEnum(BookGenre)
+  @ApiPropertyOptional({ enum: BookGenre, description: 'Filtro por género del libro' })
   genre?: BookGenre;
 
   @IsOptional()
   @Transform(({ value }) => value === 'true')
   @IsBoolean()
+  @ApiPropertyOptional({ description: 'Filtro por disponibilidad' })
   availability?: boolean;
 
   @IsOptional()
   @IsString()
-  sortBy?: string = 'createdAt';
+  @ApiPropertyOptional({ default: 'createdAt', description: 'Campo por el cual ordenar' })
+  sortBy: string = 'createdAt';
 
-  @IsOptional()
-  @IsString()
-  order?: 'ASC' | 'DESC' = 'DESC';
 
   @IsOptional()
   @Transform(({ value }) => parseInt(value))
+  @Type(() => Number)
+  @IsNumber()
+  @ApiPropertyOptional({ default: 1, description: 'Número de página para paginación' })
   page: number = 1;
 
   @IsOptional()
   @Transform(({ value }) => parseInt(value))
+  @Type(() => Number)
+  @IsNumber()
+  @ApiPropertyOptional({ default: 10, description: 'Número de elementos por página' })
   limit: number = 10;
+
+  @IsOptional()
+  @IsString()
+  @ApiPropertyOptional({ description: 'Término de búsqueda (buscará en título, autor y descripción)' })
+  search?: string;
+
+  @ApiPropertyOptional({ enum: ['asc', 'desc'], default: 'asc' })
+  @IsOptional()
+  sortDirection?: 'asc' | 'desc' = 'asc';
 }

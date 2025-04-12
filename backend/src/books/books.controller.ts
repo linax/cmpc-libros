@@ -42,7 +42,29 @@ export class BooksController {
 
   @Get()
   @ApiOperation({ summary: 'Obtener todos los libros' })
-  @ApiResponse({ status: 200, description: 'Lista de libros', type: [Book] })
+  @ApiResponse({ 
+    status: 200, 
+    description: 'Lista de libros con paginación',
+    schema: {
+      properties: {
+        data: {
+          type: 'array',
+          items: { $ref: '#/components/schemas/Book' }
+        },
+        pagination: {
+          type: 'object',
+          properties: {
+            total: { type: 'number' },
+            page: { type: 'number' },
+            limit: { type: 'number' },
+            totalPages: { type: 'number' },
+            hasNextPage: { type: 'boolean' },
+            hasPreviousPage: { type: 'boolean' }
+          }
+        }
+      }
+    }
+  })
   async findAll(@Query() queryDto: QueryBooksDto) {
     this.logger.debug(
       `Finding books with filters: ${JSON.stringify(queryDto)}`,

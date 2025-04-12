@@ -33,8 +33,8 @@ export const BookFilters: React.FC<BookFiltersProps> = ({ filters, searchTerm, o
         <Grid item xs={12} md={12}>
           <SearchField value={searchTerm} onChange={onSearchChange} placeholder="Buscar por título o autor..." />
         </Grid>
-
-        <Grid item xs={12} md={3}>
+        {/* TODO: Uncomment the following routes when the components are implemented
+              <Grid item xs={12} md={3}>
           <FormControl fullWidth>
             <InputLabel id="genre-select-label">Género</InputLabel>
             <Select labelId="genre-select-label" id="genre-select" value={filters.genre || ""} label="Género" onChange={handleFilterChange("genre")}>
@@ -75,6 +75,7 @@ export const BookFilters: React.FC<BookFiltersProps> = ({ filters, searchTerm, o
             </Select>
           </FormControl>
         </Grid>
+      */}
 
         <Grid item xs={12} md={3}>
           <FormControlLabel control={<Switch checked={!!filters.available} onChange={handleAvailabilityChange} name="available" />} label="Solo disponibles" />

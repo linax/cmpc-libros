@@ -19,14 +19,14 @@ export const BookProvider: React.FC<BookProviderProps> = ({ children }) => {
   const [sort, setSort] = useState<SortParams>({ field: "title", direction: "asc" })
   const [searchTerm, setSearchTerm] = useState("")
 
-  const [genres, setGenres] = useState<string[]>([])
-  const [publishers, setPublishers] = useState<string[]>([])
-  const [authors, setAuthors] = useState<string[]>([])
+  // const [genres, setGenres] = useState<string[]>([])
+  //  const [publishers, setPublishers] = useState<string[]>([])
+  // const [authors, setAuthors] = useState<string[]>([])
 
   const debouncedSearchTerm = useDebounce(searchTerm, 500)
 
   // Cargar opciones de filtro al iniciar
-  useEffect(() => {
+  /*useEffect(() => {
     const loadFilterOptions = async () => {
       try {
         const [genresData, publishersData, authorsData] = await Promise.all([bookService.fetchGenres(), bookService.fetchPublishers(), bookService.fetchAuthors()])
@@ -41,7 +41,7 @@ export const BookProvider: React.FC<BookProviderProps> = ({ children }) => {
     }
 
     loadFilterOptions()
-  }, [])
+  }, []) */
 
   // Efecto para buscar libros cuando cambian los parámetros
   useEffect(() => {
@@ -54,9 +54,8 @@ export const BookProvider: React.FC<BookProviderProps> = ({ children }) => {
 
     try {
       const response = await bookService.fetchBooks(filters, pagination, sort, debouncedSearchTerm)
-
-      setBooks(response.books)
-      setTotalBooks(response.total)
+      setBooks(response.data)
+      setTotalBooks(response.data.length)
     } catch (err) {
       setError("Error al cargar los libros")
       console.error(err)
@@ -80,10 +79,10 @@ export const BookProvider: React.FC<BookProviderProps> = ({ children }) => {
         setPagination,
         setSort,
         setSearchTerm,
-        fetchBooks,
-        genres,
+        fetchBooks
+        /* genres,
         publishers,
-        authors
+        authors*/
       }}
     >
       {children}

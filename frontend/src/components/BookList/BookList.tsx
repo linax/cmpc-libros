@@ -41,8 +41,8 @@ export const BookList: React.FC<BookListProps> = ({ books, loading, totalBooks, 
       id: "price" as keyof Book,
       label: "Precio",
       minWidth: 100,
-      align: "right" as const,
-      format: (value: number) => `$${value.toFixed(2)}`
+      align: "right" as const
+      // format: (value: number) => `$${value.toFixed(2)}`
     },
     {
       id: "genre" as keyof Book,

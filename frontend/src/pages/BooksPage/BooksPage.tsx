@@ -7,12 +7,12 @@ import { BookFilters } from "../../components/BookFilters/BookFilters"
 import { BookList } from "../../components/BookList/BookList"
 
 export const BooksPage: React.FC = () => {
-  const { books, totalBooks, loading, error, filters, pagination, sort, searchTerm, setFilters, setPagination, setSort, setSearchTerm, genres, publishers, authors } = useBooks()
+  const { books, totalBooks, loading, error, filters, pagination, sort, searchTerm, setFilters, setPagination, setSort, setSearchTerm /*genres, publishers, authors*/ } = useBooks()
 
-  const handleFilterChange = (newFilters: BookFiltersType) => {
+  /* const handleFilterChange = (newFilters: BookFiltersType) => {
     setFilters(newFilters)
     setPagination({ ...pagination, page: 1 }) // Reset to first page on filter change
-  }
+  } */
 
   const handleSearchChange = (term: string) => {
     setSearchTerm(term)
@@ -39,7 +39,10 @@ export const BooksPage: React.FC = () => {
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
+      {/* TODO: Change this line when add genres, author, publisher
       <BookFilters filters={filters} searchTerm={searchTerm} onFilterChange={handleFilterChange} onSearchChange={handleSearchChange} onClearFilters={handleClearFilters} genres={genres} publishers={publishers} authors={authors} />
+      */}
+      <BookFilters filters={filters} searchTerm={searchTerm} onSearchChange={handleSearchChange} onClearFilters={handleClearFilters} />
 
       <BookList books={books} loading={loading} totalBooks={totalBooks} page={pagination.page} limit={pagination.limit} onPageChange={handlePageChange} onLimitChange={handleLimitChange} onSortChange={handleSortChange} currentSort={sort} />
 

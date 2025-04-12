@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Op } from 'sequelize';
 import { Book } from './models/book.model';
@@ -12,6 +12,8 @@ import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class BooksService {
+  private readonly logger = new Logger(BooksService.name);
+
   constructor(
     @InjectModel(Book)
     private bookModel: typeof Book,
@@ -21,55 +23,72 @@ export class BooksService {
     return this.bookModel.create({ ...createBookDto });
   }
 
-  async findAll(
-    queryDto: QueryBooksDto,
-  ): Promise<{ data: Book[]; total: number; page: number; limit: number }> {
-    const {
+  async findAll(queryDto: QueryBooksDto) {
+    const { 
+      page = 1, 
+      limit = 10, 
+      sortBy = 'createdAt', 
+      sortDirection = 'DESC',
+      search,
       title,
       author,
       publisher,
       genre,
-      availability,
-      sortBy,
-      order,
-      page,
-      limit,
+      availability
     } = queryDto;
 
-    const whereClause: any = {};
+    // Construir las condiciones de búsqueda
+    const whereConditions = {};
+    
+    // Agregar filtros específicos solo si están definidos
+    if (title) whereConditions['title'] = { [Op.like]: `%${title}%` };
+    if (author) whereConditions['author'] = { [Op.like]: `%${author}%` };
+    if (publisher) whereConditions['publisher'] = { [Op.like]: `%${publisher}%` };
+    if (genre) whereConditions['genre'] = genre;
+    if (availability !== undefined) whereConditions['availability'] = availability;
 
-    if (title) {
-      whereClause.title = { [Op.iLike]: `%${title}%` };
+    // Agregar searchTerm para búsqueda general si está definido
+    if (search && search.trim() !== '') {
+      whereConditions[Op.or] = [
+        { title: { [Op.like]: `%${search}%` } },
+        { author: { [Op.like]: `%${search}%` } },
+        { description: { [Op.like]: `%${search}%` } }
+      ];
     }
 
-    if (author) {
-      whereClause.author = { [Op.iLike]: `%${author}%` };
-    }
-
-    if (publisher) {
-      whereClause.publisher = { [Op.iLike]: `%${publisher}%` };
-    }
-
-    if (genre) {
-      whereClause.genre = genre;
-    }
-
-    if (availability !== undefined) {
-      whereClause.availability = availability;
-    }
-
-    const { rows, count } = await this.bookModel.findAndCountAll({
-      where: whereClause,
-      order: [[sortBy || 'createdAt', order || 'DESC']],
-      limit,
-      offset: (page - 1) * limit,
-    });
-
-    return {
-      data: rows,
-      total: count,
+    this.logger.debug(`Finding books with: ${JSON.stringify({
+      whereConditions,
       page,
       limit,
+      sortBy,
+      sortDirection
+    })}`);
+
+    // Realizar la consulta con paginación y ordenación
+    const offset = (page - 1) * limit;
+    
+    const { rows: books, count: total } = await this.bookModel.findAndCountAll({
+      where: whereConditions,
+      limit,
+      offset,
+      order: [[sortBy, sortDirection]],
+    });
+
+    // Calcular información de paginación
+    const totalPages = Math.ceil(total / limit);
+    const hasNextPage = page < totalPages;
+    const hasPreviousPage = page > 1;
+
+    return {
+      data: books,
+      pagination: {
+        total,
+        page,
+        limit,
+        totalPages,
+        hasNextPage,
+        hasPreviousPage,
+      }
     };
   }
 
