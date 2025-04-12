@@ -1,4 +1,4 @@
-# dashboard-fullstack
+# CMPC-LIBROS
 
 ## Carpetas:
 
@@ -34,6 +34,14 @@ rm -rf backend/node_modules
 
 docker-compose up --build
 
+# Levantar el proyecto:
+
+Luego de levantar el contenedor:
+
+```bash
+$ http://localhost:3001/
+```
+
 # Swagger:
 
 Para acceder a swagger, luego de levantar el contenedor:
@@ -46,14 +54,10 @@ $ http://localhost:3000/api-swagger
 
 Se tienen dos gráficos de productos:
 
-- Stock por producto
-- Distribucion de precios
-  Ademas, se tienen 2 metricas iniciales:
-- Total de productos (tipos de productos)
-- Ingresos totales
+- Libros tienen atributos como: titulo, autor, editorial, precio, disponibilidad, género, stock, descripción y código isbn
+- El género puede corresponder a un set definido de opciones como: no ficción, ficción, tecnología, historia, otros.
 
-Los libros son obtenidos por medio de endpoints de productos, desde el backend, y las metricas son otro conjunto de endpoints (en este caso solo con la opcion de obtenerlas)
-
+Los libros son obtenidos por medio de endpoints, desde el backend.
 ![Graficos](img1.png)
 ![Tabla](img2.png)
 
