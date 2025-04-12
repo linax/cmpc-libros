@@ -34,6 +34,14 @@ rm -rf backend/node_modules
 
 docker-compose up --build
 
+# Swagger:
+
+Para acceder a swagger, luego de levantar el contenedor:
+
+```bash
+$ http://localhost:3000/api-swagger
+```
+
 ## Supuestos:
 
 Se tienen dos gráficos de productos:

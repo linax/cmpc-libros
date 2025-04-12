@@ -3,12 +3,27 @@ import { ValidationPipe } from '@nestjs/common';
 //import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 //import * as morgan from 'morgan';
 //import * as fs from 'fs';
 //import * as path from 'path';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  // Swagger configuration
+  const config = new DocumentBuilder()
+  .setTitle('Books API')
+  .setDescription('API para gestión de libros')
+  .setVersion('1.0')
+  .addTag('books')
+  .addServer('/api')
+  .build();
+
+const document = SwaggerModule.createDocument(app, config);
+
+// Swagger at: http://localhost:3000/api-swagger
+SwaggerModule.setup('api-swagger', app, document);
 
   // Get configuration
   const configService = app.get(ConfigService);
