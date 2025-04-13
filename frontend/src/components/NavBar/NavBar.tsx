@@ -23,11 +23,11 @@ export const NavBar: React.FC = () => {
     await logout()
   }
 
-  const handleProfile = () => {
+  /*  const handleProfile = () => {
     handleClose()
     navigate(ROUTES.PROFILE)
   }
-
+*/
   return (
     <AppBar position="static">
       <Toolbar>
@@ -64,7 +64,9 @@ export const NavBar: React.FC = () => {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
               >
-                <MenuItem onClick={handleProfile}>Mi Perfil</MenuItem>
+                {/* TODO: Change this if you add profile page
+                 <MenuItem onClick={handleProfile}>Mi Perfil</MenuItem>
+                */}
                 <MenuItem onClick={handleLogout}>Cerrar Sesión</MenuItem>
               </Menu>
             </Box>

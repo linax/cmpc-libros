@@ -5,7 +5,7 @@ import { Container, Box, Typography, TextField, Button, Paper, Link, Alert, Circ
 import { ROUTES } from "../../config/routes"
 
 export const RegisterPage: React.FC = () => {
-  const [name, setName] = useState("")
+  const [fullName, setName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
@@ -18,7 +18,7 @@ export const RegisterPage: React.FC = () => {
     setError(null)
 
     // Validaciones básicas
-    if (!name || !email || !password || !confirmPassword) {
+    if (!fullName || !email || !password || !confirmPassword) {
       setError("Por favor, completa todos los campos")
       return
     }
@@ -29,8 +29,8 @@ export const RegisterPage: React.FC = () => {
     }
 
     try {
-      await register(name, email, password)
-      // La redirección se maneja en el AuthProvider
+      await register(fullName, email, password)
+      navigate(ROUTES.BOOKS)
     } catch (err: any) {
       setError(err.message || "Error al registrarse")
     }
@@ -65,7 +65,7 @@ export const RegisterPage: React.FC = () => {
           )}
 
           <Box component="form" onSubmit={handleSubmit}>
-            <TextField margin="normal" fullWidth id="name" label="Nombre Completo" name="name" autoComplete="name" autoFocus value={name} onChange={e => setName(e.target.value)} disabled={loading} />
+            <TextField margin="normal" fullWidth id="fullName" label="Nombre Completo" name="fullName" autoComplete="fullName" autoFocus value={fullName} onChange={e => setName(e.target.value)} disabled={loading} />
 
             <TextField margin="normal" required fullWidth id="email" label="Correo Electrónico" name="email" autoComplete="email" value={email} onChange={e => setEmail(e.target.value)} disabled={loading} />
 

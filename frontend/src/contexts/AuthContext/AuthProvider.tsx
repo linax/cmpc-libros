@@ -34,17 +34,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setLoading(true)
     try {
       const loggedUser = await authService.login({ email, password })
-      console.log(loggedUser)
       setUser(loggedUser)
     } finally {
       setLoading(false)
     }
   }
 
-  const register = async (name: string, email: string, password: string): Promise<void> => {
+  const register = async (fullName: string, email: string, password: string): Promise<void> => {
     setLoading(true)
     try {
-      const newUser = await authService.register({ name, email, password })
+      const newUser = await authService.register({ fullName, email, password })
       setUser(newUser)
     } finally {
       setLoading(false)

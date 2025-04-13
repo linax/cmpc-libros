@@ -31,7 +31,7 @@ interface LoginCredentials {
 }
 
 interface RegisterData {
-  name: string
+  fullName: string
   email: string
   password: string
 }
@@ -101,20 +101,7 @@ export const login = async (credentials: LoginCredentials): Promise<User | null>
     const { data } = await apiClient.post<AuthResponse>("/auth/login", credentials)
 
     saveTokens(data.accessToken, data.refreshToken)
-
-    // Si el backend devuelve la información del usuario junto con los tokens, podríamos ajustar esto
     const user = data.user
-
-    // Opcionalmente, podríamos hacer una petición adicional para obtener datos completos del usuario
-    /* if (user) {
-      try {
-        const { data: userData } = await apiClient.get<User>("/auth/me")
-        return userData
-      } catch {
-        return user // Si falla, usamos los datos básicos del token
-      }
-    }*/
-
     return {
       id: user.id,
       email: user.email,
@@ -132,18 +119,11 @@ export const register = async (userData: RegisterData): Promise<User | null> => 
     saveTokens(data.accessToken, data.refreshToken)
 
     const user = data.user
-
-    // Similar a login, podríamos hacer una petición adicional para datos completos
-    if (user) {
-      try {
-        const { data: completeUserData } = await apiClient.get<User>("/auth/me")
-        return completeUserData
-      } catch {
-        return user
-      }
+    return {
+      id: user.id,
+      email: user.email,
+      role: user.role
     }
-
-    return user
   } catch (error: any) {
     throw error
   }

@@ -1,10 +1,11 @@
 import React from "react"
-import { Container, Alert, Snackbar } from "@mui/material"
+import { Container, Alert, Snackbar, Box } from "@mui/material"
 
 import { useBooks } from "../../contexts/BookContext/useBooks"
 import { BookFilters as BookFiltersType, SortParams } from "../../models/book.models"
 import { BookFilters } from "../../components/BookFilters/BookFilters"
 import { BookList } from "../../components/BookList/BookList"
+import { NavBar } from "../../components/NavBar/NavBar"
 
 export const BooksPage: React.FC = () => {
   const { books, totalBooks, loading, error, filters, pagination, sort, searchTerm, setFilters, setPagination, setSort, setSearchTerm, fetchBooks /*genres, publishers, authors*/ } = useBooks()
@@ -43,19 +44,24 @@ export const BooksPage: React.FC = () => {
   }
 
   return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
-      {/* TODO: Change this line when add genres, author, publisher
+    <>
+      <NavBar />
+      <Box sx={{ padding: 3 }}>
+        <Container maxWidth="lg" sx={{ py: 4 }}>
+          {/* TODO: Change this line when add genres, author, publisher
       <BookFilters filters={filters} searchTerm={searchTerm} onFilterChange={handleFilterChange} onSearchChange={handleSearchChange} onClearFilters={handleClearFilters} genres={genres} publishers={publishers} authors={authors} />
       */}
-      <BookFilters filters={filters} searchTerm={searchTerm} onSearchChange={handleSearchChange} onClearFilters={handleClearFilters} />
+          <BookFilters filters={filters} searchTerm={searchTerm} onSearchChange={handleSearchChange} onClearFilters={handleClearFilters} />
 
-      <BookList books={books} loading={loading} totalBooks={totalBooks} page={pagination.page} limit={pagination.limit} onPageChange={handlePageChange} onLimitChange={handleLimitChange} onSortChange={handleSortChange} currentSort={sort} onRefreshBooks={handleRefreshBooks} />
+          <BookList books={books} loading={loading} totalBooks={totalBooks} page={pagination.page} limit={pagination.limit} onPageChange={handlePageChange} onLimitChange={handleLimitChange} onSortChange={handleSortChange} currentSort={sort} onRefreshBooks={handleRefreshBooks} />
 
-      <Snackbar open={!!error} autoHideDuration={6000} anchorOrigin={{ vertical: "bottom", horizontal: "center" }}>
-        <Alert severity="error" sx={{ width: "100%" }}>
-          {error}
-        </Alert>
-      </Snackbar>
-    </Container>
+          <Snackbar open={!!error} autoHideDuration={6000} anchorOrigin={{ vertical: "bottom", horizontal: "center" }}>
+            <Alert severity="error" sx={{ width: "100%" }}>
+              {error}
+            </Alert>
+          </Snackbar>
+        </Container>
+      </Box>
+    </>
   )
 }
