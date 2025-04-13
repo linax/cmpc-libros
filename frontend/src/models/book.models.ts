@@ -30,3 +30,17 @@ export interface BooksResponse {
   books: Book[]
   total: number
 }
+
+export enum BookGenre {
+  FICTION = "FICTION",
+  NON_FICTION = "NON_FICTION",
+  SCIENCE = "SCIENCE",
+  TECHNOLOGY = "TECHNOLOGY",
+  HISTORY = "HISTORY",
+  BIOGRAPHY = "BIOGRAPHY",
+  CHILDREN = "CHILDREN",
+  ROMANCE = "ROMANCE",
+  THRILLER = "THRILLER",
+  FANTASY = "FANTASY",
+  OTHER = "OTHER"
+}

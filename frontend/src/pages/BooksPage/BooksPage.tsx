@@ -7,7 +7,7 @@ import { BookFilters } from "../../components/BookFilters/BookFilters"
 import { BookList } from "../../components/BookList/BookList"
 
 export const BooksPage: React.FC = () => {
-  const { books, totalBooks, loading, error, filters, pagination, sort, searchTerm, setFilters, setPagination, setSort, setSearchTerm /*genres, publishers, authors*/ } = useBooks()
+  const { books, totalBooks, loading, error, filters, pagination, sort, searchTerm, setFilters, setPagination, setSort, setSearchTerm, fetchBooks /*genres, publishers, authors*/ } = useBooks()
 
   /* const handleFilterChange = (newFilters: BookFiltersType) => {
     setFilters(newFilters)
@@ -37,6 +37,11 @@ export const BooksPage: React.FC = () => {
     setSort(newSort)
   }
 
+  // Nueva función para refrescar los libros cuando se añade uno nuevo
+  const handleRefreshBooks = () => {
+    fetchBooks()
+  }
+
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
       {/* TODO: Change this line when add genres, author, publisher
@@ -44,7 +49,7 @@ export const BooksPage: React.FC = () => {
       */}
       <BookFilters filters={filters} searchTerm={searchTerm} onSearchChange={handleSearchChange} onClearFilters={handleClearFilters} />
 
-      <BookList books={books} loading={loading} totalBooks={totalBooks} page={pagination.page} limit={pagination.limit} onPageChange={handlePageChange} onLimitChange={handleLimitChange} onSortChange={handleSortChange} currentSort={sort} />
+      <BookList books={books} loading={loading} totalBooks={totalBooks} page={pagination.page} limit={pagination.limit} onPageChange={handlePageChange} onLimitChange={handleLimitChange} onSortChange={handleSortChange} currentSort={sort} onRefreshBooks={handleRefreshBooks} />
 
       <Snackbar open={!!error} autoHideDuration={6000} anchorOrigin={{ vertical: "bottom", horizontal: "center" }}>
         <Alert severity="error" sx={{ width: "100%" }}>
