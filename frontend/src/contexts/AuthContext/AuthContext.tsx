@@ -24,6 +24,3 @@ export const AuthContext = createContext<AuthContextType>({
   updateProfile: async () => {},
   changePassword: async () => {}
 })
-
-// Hook personalizado para usar el contexto de autenticación
-export const useAuth = () => useContext(AuthContext)

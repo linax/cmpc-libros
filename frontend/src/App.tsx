@@ -10,9 +10,11 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <BrowserRouter>
-        <BookProvider>
-          <AppRouter />
-        </BookProvider>
+        <AuthProvider>
+          <BookProvider>
+            <AppRouter />
+          </BookProvider>
+        </AuthProvider>
       </BrowserRouter>
     </ThemeProvider>
   )

@@ -2,7 +2,18 @@ import { User } from "../models/user.models"
 import apiClient from "./api"
 import { jwtDecode } from "jwt-decode"
 
+interface UserPayload {
+  id: string
+  email: string
+  role?: string
+  fullName: string
+  isActive: boolean
+  createdAt: string
+  updatedAt: string
+  deletedAt: string
+}
 interface AuthResponse {
+  user: UserPayload
   accessToken: string
   refreshToken?: string
 }
@@ -92,19 +103,23 @@ export const login = async (credentials: LoginCredentials): Promise<User | null>
     saveTokens(data.accessToken, data.refreshToken)
 
     // Si el backend devuelve la información del usuario junto con los tokens, podríamos ajustar esto
-    const user = getUserFromToken(data.accessToken)
+    const user = data.user
 
     // Opcionalmente, podríamos hacer una petición adicional para obtener datos completos del usuario
-    if (user) {
+    /* if (user) {
       try {
         const { data: userData } = await apiClient.get<User>("/auth/me")
         return userData
       } catch {
         return user // Si falla, usamos los datos básicos del token
       }
-    }
+    }*/
 
-    return user
+    return {
+      id: user.id,
+      email: user.email,
+      role: user.role
+    }
   } catch (error: any) {
     throw error
   }
@@ -116,7 +131,7 @@ export const register = async (userData: RegisterData): Promise<User | null> => 
 
     saveTokens(data.accessToken, data.refreshToken)
 
-    const user = getUserFromToken(data.accessToken)
+    const user = data.user
 
     // Similar a login, podríamos hacer una petición adicional para datos completos
     if (user) {
@@ -158,18 +173,16 @@ export const getCurrentUser = async (): Promise<User | null> => {
     return null
   }
 
-  // Verificar si el token expiró
   if (isTokenExpired(token)) {
     try {
-      // Intentar refrescar el token
-      const newToken = await refreshAuthToken()
-      // Ahora que tenemos un nuevo token, obtenemos los datos del usuario
-      try {
+      await refreshAuthToken()
+
+      /* try {
         const { data } = await apiClient.get<User>("/auth/me")
         return data
       } catch {
         return getUserFromToken(newToken)
-      }
+      }*/
     } catch {
       // Si falla el refresh, limpiar tokens y retornar null
       localStorage.removeItem("accessToken")
@@ -178,14 +191,7 @@ export const getCurrentUser = async (): Promise<User | null> => {
     }
   }
 
-  // Si el token es válido, obtener información del usuario del servidor
-  try {
-    const { data } = await apiClient.get<User>("/auth/me")
-    return data
-  } catch {
-    // Si falla la petición, intentamos obtener datos básicos del token
-    return getUserFromToken(token)
-  }
+  return getUserFromToken(token)
 }
 
 export const isAuthenticated = (): boolean => {

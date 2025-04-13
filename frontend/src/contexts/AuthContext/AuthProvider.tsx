@@ -30,18 +30,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     checkAuth()
   }, [])
 
-  // Función de login
   const login = async (email: string, password: string): Promise<void> => {
     setLoading(true)
     try {
       const loggedUser = await authService.login({ email, password })
+      console.log(loggedUser)
       setUser(loggedUser)
     } finally {
       setLoading(false)
     }
   }
 
-  // Función de registro
   const register = async (name: string, email: string, password: string): Promise<void> => {
     setLoading(true)
     try {
@@ -52,7 +51,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   }
 
-  // Función de logout
   const logout = async (): Promise<void> => {
     try {
       await authService.logout()
@@ -62,7 +60,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   }
 
-  // Función para actualizar perfil
   const updateProfile = async (userData: Partial<User>): Promise<void> => {
     if (!user) return
 
@@ -75,7 +72,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   }
 
-  // Función para cambiar contraseña
   const changePassword = async (oldPassword: string, newPassword: string): Promise<void> => {
     try {
       await authService.changePassword(oldPassword, newPassword)
