@@ -1,5 +1,5 @@
 import React from "react"
-import { Paper, Grid, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, FormControlLabel, Switch, Typography, Button, Box } from "@mui/material"
+import { Paper, Grid, FormControlLabel, Switch, Typography, Button, Box } from "@mui/material"
 import { BookFilters as BookFiltersType } from "../../../src/models/book.models"
 import { SearchField } from "../../../src/components/common/SearchField/SearchField"
 
@@ -13,14 +13,20 @@ interface BookFiltersProps {
   publishers: string[]
   authors: string[]
 }
+export const BookFilters: React.FC<BookFiltersProps> = ({ filters, searchTerm, onFilterChange, onSearchChange, onClearFilters }) => {
+  const [showOnlyAvailable, setShowOnlyAvailable] = React.useState(filters.availability === true)
 
-export const BookFilters: React.FC<BookFiltersProps> = ({ filters, searchTerm, onFilterChange, onSearchChange, onClearFilters, genres, publishers, authors }) => {
-  const handleFilterChange = (key: keyof BookFiltersType) => (event: SelectChangeEvent) => {
-    onFilterChange({ ...filters, [key]: event.target.value })
-  }
+  React.useEffect(() => {
+    setShowOnlyAvailable(filters.availability === true)
+  }, [filters.availability])
 
   const handleAvailabilityChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    onFilterChange({ ...filters, available: event.target.checked })
+    const checked = event.target.checked
+    setShowOnlyAvailable(checked)
+    onFilterChange({
+      ...filters,
+      availability: checked ? true : undefined
+    })
   }
 
   return (
@@ -33,52 +39,9 @@ export const BookFilters: React.FC<BookFiltersProps> = ({ filters, searchTerm, o
         <Grid item xs={12} md={12}>
           <SearchField value={searchTerm} onChange={onSearchChange} placeholder="Buscar por título o autor..." />
         </Grid>
-        {/* TODO: Uncomment the following routes when the components are implemented
-              <Grid item xs={12} md={3}>
-          <FormControl fullWidth>
-            <InputLabel id="genre-select-label">Género</InputLabel>
-            <Select labelId="genre-select-label" id="genre-select" value={filters.genre || ""} label="Género" onChange={handleFilterChange("genre")}>
-              <MenuItem value="">Todos</MenuItem>
-              {genres.map(genre => (
-                <MenuItem key={genre} value={genre}>
-                  {genre}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </Grid>
 
         <Grid item xs={12} md={3}>
-          <FormControl fullWidth>
-            <InputLabel id="publisher-select-label">Editorial</InputLabel>
-            <Select labelId="publisher-select-label" id="publisher-select" value={filters.publisher || ""} label="Editorial" onChange={handleFilterChange("publisher")}>
-              <MenuItem value="">Todas</MenuItem>
-              {publishers.map(publisher => (
-                <MenuItem key={publisher} value={publisher}>
-                  {publisher}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </Grid>
-
-        <Grid item xs={12} md={3}>
-          <FormControl fullWidth>
-            <InputLabel id="author-select-label">Autor</InputLabel>
-            <Select labelId="author-select-label" id="author-select" value={filters.author || ""} label="Autor" onChange={handleFilterChange("author")}>
-              <MenuItem value="">Todos</MenuItem>
-              {authors.map(author => (
-                <MenuItem key={author} value={author}>
-                  {author}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </Grid>
-      */}
-
-        <Grid item xs={12} md={3}>
-          <FormControlLabel control={<Switch checked={!!filters.available} onChange={handleAvailabilityChange} name="available" />} label="Solo disponibles" />
+          <FormControlLabel control={<Switch checked={showOnlyAvailable} onChange={handleAvailabilityChange} name="availability" />} label="Solo disponibles" />
         </Grid>
       </Grid>
 

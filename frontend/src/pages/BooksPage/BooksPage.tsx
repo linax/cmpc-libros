@@ -10,10 +10,10 @@ import { NavBar } from "../../components/NavBar/NavBar"
 export const BooksPage: React.FC = () => {
   const { books, totalBooks, loading, error, filters, pagination, sort, searchTerm, setFilters, setPagination, setSort, setSearchTerm, fetchBooks /*genres, publishers, authors*/ } = useBooks()
 
-  /* const handleFilterChange = (newFilters: BookFiltersType) => {
+  const handleFilterChange = (newFilters: BookFiltersType) => {
     setFilters(newFilters)
     setPagination({ ...pagination, page: 1 }) // Reset to first page on filter change
-  } */
+  }
 
   const handleSearchChange = (term: string) => {
     setSearchTerm(term)
@@ -51,7 +51,7 @@ export const BooksPage: React.FC = () => {
           {/* TODO: Change this line when add genres, author, publisher
       <BookFilters filters={filters} searchTerm={searchTerm} onFilterChange={handleFilterChange} onSearchChange={handleSearchChange} onClearFilters={handleClearFilters} genres={genres} publishers={publishers} authors={authors} />
       */}
-          <BookFilters filters={filters} searchTerm={searchTerm} onSearchChange={handleSearchChange} onClearFilters={handleClearFilters} />
+          <BookFilters filters={filters} searchTerm={searchTerm} onSearchChange={handleSearchChange} onClearFilters={handleClearFilters} onFilterChange={handleFilterChange} />
 
           <BookList books={books} loading={loading} totalBooks={totalBooks} page={pagination.page} limit={pagination.limit} onPageChange={handlePageChange} onLimitChange={handleLimitChange} onSortChange={handleSortChange} currentSort={sort} onRefreshBooks={handleRefreshBooks} />
 

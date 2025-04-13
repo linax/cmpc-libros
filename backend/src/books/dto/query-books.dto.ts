@@ -11,23 +11,23 @@ export class QueryBooksDto {
 
   @IsOptional()
   @IsString()
-  @ApiPropertyOptional({ description: 'Filtro por autor del libro' })
+  @ApiPropertyOptional({ description: 'Filtro por autor del libro',example: 'Schopenhauer'  })
   author?: string;
 
   @IsOptional()
   @IsString()
-  @ApiPropertyOptional({ description: 'Filtro por editorial' })
+  @ApiPropertyOptional({ description: 'Filtro por editorial', example: 'URANO'  })
   publisher?: string;
 
   @IsOptional()
   @IsEnum(BookGenre)
-  @ApiPropertyOptional({ enum: BookGenre, description: 'Filtro por género del libro' })
+  @ApiPropertyOptional({ enum: BookGenre, description: 'Filtro por género del libro', example: 'FICTION'  })
   genre?: BookGenre;
 
   @IsOptional()
   @Transform(({ value }) => value === 'true')
   @IsBoolean()
-  @ApiPropertyOptional({ description: 'Filtro por disponibilidad' })
+  @ApiPropertyOptional({ description: 'Filtro por disponibilidad',example: true  })
   availability?: boolean;
 
   @IsOptional()

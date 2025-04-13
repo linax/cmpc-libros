@@ -3,7 +3,7 @@ export interface Book {
   title: string
   author: string
   publisher: string
-  available: boolean
+  availability: boolean
   genre: string
   stock: number
   price: number
@@ -14,7 +14,7 @@ export interface BookFilters {
   genre?: string
   publisher?: string
   author?: string
-  available?: boolean
+  availability?: boolean
 }
 
 export interface PaginationParams {

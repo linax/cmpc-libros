@@ -45,7 +45,8 @@ export class BooksService {
     if (author) whereConditions['author'] = { [Op.like]: `%${author}%` };
     if (publisher) whereConditions['publisher'] = { [Op.like]: `%${publisher}%` };
     if (genre) whereConditions['genre'] = genre;
-    if (availability !== undefined) whereConditions['availability'] = availability;
+
+    if (availability !== undefined) whereConditions['availability'] = !availability; // Invertimos el valor
 
     // Agregar searchTerm para búsqueda general si está definido
     if (search && search.trim() !== '') {
