@@ -21,6 +21,7 @@ export const NavBar: React.FC = () => {
   const handleLogout = async () => {
     handleClose()
     await logout()
+    navigate(ROUTES.HOME)
   }
 
   /*  const handleProfile = () => {
