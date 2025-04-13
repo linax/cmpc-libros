@@ -1,9 +1,9 @@
-import React from "react"
 import { BrowserRouter } from "react-router-dom"
 import { ThemeProvider, CssBaseline } from "@mui/material"
 import { theme } from "./config/theme"
 import { AppRouter } from "./router"
 import { BookProvider } from "./contexts/BookContext/BookProvider"
+import { AuthProvider } from "./contexts/AuthContext/AuthProvider"
 
 function App() {
   return (

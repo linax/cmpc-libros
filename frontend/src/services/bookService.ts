@@ -1,8 +1,8 @@
-import api from "./api"
+import apiClient from "./api"
 import { Book, BookFilters, PaginationParams, SortParams, BooksResponse } from "../models/book.models"
 
 export const fetchBooks = async (filters: BookFilters = {}, pagination: PaginationParams = { page: 1, limit: 10 }, sort: SortParams = { field: "title", direction: "asc" }, searchTerm: string = ""): Promise<BooksResponse> => {
-  const { data } = await api.get("/books", {
+  const { data } = await apiClient.get("/books", {
     params: {
       ...filters,
       page: pagination.page,
@@ -16,12 +16,12 @@ export const fetchBooks = async (filters: BookFilters = {}, pagination: Paginati
 }
 
 export const fetchBookById = async (id: string): Promise<Book> => {
-  const { data } = await api.get(`/books/${id}`)
+  const { data } = await apiClient.get(`/books/${id}`)
   return data
 }
 
 export const createBook = async (book: Omit<Book, "id">): Promise<Book> => {
-  const { data } = await api.post("/books", book)
+  const { data } = await apiClient.post("/books", book)
   return data
 }
 
@@ -38,7 +38,7 @@ export const updateBook = async (book: Partial<Book>): Promise<Book> => {
     }
 
     // Realizamos la petición PATCH
-    const { data } = await api.patch(`/books/${id}`, preparedData)
+    const { data } = await apiClient.patch(`/books/${id}`, preparedData)
     return data
   } catch (error) {
     console.error("Error updating book:", error)
@@ -47,21 +47,21 @@ export const updateBook = async (book: Partial<Book>): Promise<Book> => {
 }
 
 export const deleteBook = async (id: string): Promise<void> => {
-  await api.delete(`/books/${id}`)
+  await apiClient.delete(`/books/${id}`)
 }
 
 // Obtener opciones para filtros
 export const fetchGenres = async (): Promise<string[]> => {
-  const { data } = await api.get("/books/genres")
+  const { data } = await apiClient.get("/books/genres")
   return data
 }
 
 export const fetchPublishers = async (): Promise<string[]> => {
-  const { data } = await api.get("/books/publishers")
+  const { data } = await apiClient.get("/books/publishers")
   return data
 }
 
 export const fetchAuthors = async (): Promise<string[]> => {
-  const { data } = await api.get("/books/authors")
+  const { data } = await apiClient.get("/books/authors")
   return data
 }
