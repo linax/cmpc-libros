@@ -2,14 +2,18 @@ import React from "react"
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TablePagination, CircularProgress, Box, Typography, TableSortLabel } from "@mui/material"
 
 interface Column<T> {
+  // Recibe un tipo genérico T
   id: keyof T
   label: string
   minWidth?: number
   align?: "right" | "left" | "center"
-  format?: (value: any) => string
+  format?: (value: any) => React.ReactNode | string | number | boolean // Permite ReactNode
+  renderCell?: (row: T) => React.ReactNode // Nueva propiedad para renderización personalizada
+  preventRowClick?: boolean // Nueva propiedad
 }
 
 interface DataTableProps<T> {
+  // Recibe un tipo genérico T
   columns: Column<T>[]
   data: T[]
   loading: boolean
@@ -21,9 +25,24 @@ interface DataTableProps<T> {
   onSort?: (property: keyof T) => void
   orderBy?: keyof T
   orderDirection?: "asc" | "desc"
+  onRowClick?: (row: T) => void // Prop para manejar el click en la fila
 }
 
-export function DataTable<T extends { id: string | number }>({ columns, data, loading, totalItems, page, rowsPerPage, onPageChange, onRowsPerPageChange, onSort, orderBy, orderDirection = "asc" }: DataTableProps<T>) {
+export function DataTable<T extends object>({
+  // Asegura que T es un objeto
+  columns,
+  data,
+  loading,
+  totalItems,
+  page,
+  rowsPerPage,
+  onPageChange,
+  onRowsPerPageChange,
+  onSort,
+  orderBy,
+  orderDirection = "asc",
+  onRowClick
+}: DataTableProps<T>) {
   const handleChangePage = (_: unknown, newPage: number) => {
     onPageChange(newPage + 1)
   }
@@ -39,57 +58,64 @@ export function DataTable<T extends { id: string | number }>({ columns, data, lo
   }
 
   return (
-    <Paper sx={{ width: "100%", overflow: "hidden" }}>
-      <TableContainer sx={{ maxHeight: 440 }}>
-        <Table stickyHeader aria-label="sticky table">
-          <TableHead>
+    <TableContainer component={Paper}>
+      <Table sx={{ minWidth: 650 }} aria-label="simple table">
+        <TableHead>
+          <TableRow>
+            {columns.map(column => (
+              <TableCell key={column.id} align={column.align} style={{ minWidth: column.minWidth }}>
+                {onSort && column.id !== "delete" ? ( // No permitir ordenar en la columna de eliminar
+                  <TableSortLabel active={orderBy === column.id} direction={orderBy === column.id ? orderDirection : "asc"} onClick={handleSort(column.id)}>
+                    {column.label}
+                  </TableSortLabel>
+                ) : (
+                  column.label
+                )}
+              </TableCell>
+            ))}
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {loading ? (
             <TableRow>
-              {columns.map(column => (
-                <TableCell key={String(column.id)} align={column.align} style={{ minWidth: column.minWidth }}>
-                  {onSort ? (
-                    <TableSortLabel active={orderBy === column.id} direction={orderBy === column.id ? orderDirection : "asc"} onClick={handleSort(column.id)}>
-                      {column.label}
-                    </TableSortLabel>
-                  ) : (
-                    column.label
-                  )}
-                </TableCell>
-              ))}
+              <TableCell colSpan={columns.length} align="center">
+                <CircularProgress />
+              </TableCell>
             </TableRow>
-          </TableHead>
-          <TableBody>
-            {loading ? (
-              <TableRow>
-                <TableCell colSpan={columns.length} align="center">
-                  <Box sx={{ display: "flex", justifyContent: "center", p: 3 }}>
-                    <CircularProgress />
-                  </Box>
-                </TableCell>
+          ) : data.length === 0 ? (
+            <TableRow>
+              <TableCell colSpan={columns.length} align="center">
+                <Typography variant="subtitle1">No hay datos disponibles</Typography>
+              </TableCell>
+            </TableRow>
+          ) : (
+            data.map(row => (
+              <TableRow
+                key={Object.values(row).join("-")} // Asegúrate de que la clave sea única
+                onClick={event => {
+                  const clickedElement = event.target as HTMLElement
+                  // Verifica si el clic ocurrió dentro de un elemento que debería prevenir el click de la fila
+                  if (onRowClick && !clickedElement.closest("button, a, input")) {
+                    onRowClick(row)
+                  }
+                }}
+                style={{ cursor: onRowClick ? "pointer" : "default" }}
+              >
+                {columns.map(column => (
+                  <TableCell key={column.id} align={column.align}>
+                    {column.renderCell
+                      ? column.renderCell(row) // Renderiza el contenido personalizado
+                      : column.format
+                      ? column.format(row[column.id])
+                      : row[column.id]}
+                  </TableCell>
+                ))}
               </TableRow>
-            ) : data.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={columns.length} align="center">
-                  <Typography variant="body1">No hay datos disponibles</Typography>
-                </TableCell>
-              </TableRow>
-            ) : (
-              data.map(row => (
-                <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
-                  {columns.map(column => {
-                    const value = row[column.id]
-                    return (
-                      <TableCell key={String(column.id)} align={column.align}>
-                        {column.format ? column.format(value) : value}
-                      </TableCell>
-                    )
-                  })}
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <TablePagination rowsPerPageOptions={[5, 10, 25]} component="div" count={totalItems} rowsPerPage={rowsPerPage} page={page - 1} onPageChange={handleChangePage} onRowsPerPageChange={handleChangeRowsPerPage} labelRowsPerPage="Filas por página:" labelDisplayedRows={({ from, to, count }) => `${from}-${to} de ${count !== -1 ? count : `más de ${to}`}`} />
-    </Paper>
+            ))
+          )}
+        </TableBody>
+      </Table>
+      <TablePagination rowsPerPageOptions={[5, 10, 25]} component="div" count={totalItems} rowsPerPage={rowsPerPage} page={page - 1} onPageChange={handleChangePage} onRowsPerPageChange={handleChangeRowsPerPage} labelDisplayedRows={({ from, to, count }) => `${from}-${to} de ${count !== -1 ? count : `más de ${to}`}`} />
+    </TableContainer>
   )
 }

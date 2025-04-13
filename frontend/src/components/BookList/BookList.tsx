@@ -1,10 +1,12 @@
 import React, { useState } from "react"
-import { Paper, Typography, Box, Button, Chip } from "@mui/material"
+import { Paper, Typography, Box, Button, Chip, IconButton } from "@mui/material"
 import AddIcon from "@mui/icons-material/Add"
+import DeleteIcon from "@mui/icons-material/Delete"
 import { Book, SortParams } from "../../../src/models/book.models"
-import { DataTable } from "../../../src/components/ui/DataTable/DataTable"
+import { DataTable, Column } from "../../../src/components/ui/DataTable/DataTable" // Importa Column
 import { useNavigate } from "react-router-dom"
 import { AddBookModal } from "./AddBookModal"
+import * as bookService from "../../services/bookService"
 
 interface BookListProps {
   books: Book[]
@@ -16,7 +18,7 @@ interface BookListProps {
   onLimitChange: (limit: number) => void
   onSortChange: (sort: SortParams) => void
   currentSort: SortParams
-  onRefreshBooks: () => void // Nueva prop para refrescar la lista después de agregar
+  onRefreshBooks: () => void
 }
 
 export const BookList: React.FC<BookListProps> = ({ books, loading, totalBooks, page, limit, onPageChange, onLimitChange, onSortChange, currentSort, onRefreshBooks }) => {
@@ -41,31 +43,55 @@ export const BookList: React.FC<BookListProps> = ({ books, loading, totalBooks, 
   }
 
   const handleBookAdded = () => {
-    onRefreshBooks() // Recargar la lista de libros después de agregar uno nuevo
+    onRefreshBooks()
   }
 
-  const columns = [
-    { id: "title" as keyof Book, label: "Título", minWidth: 200 },
-    { id: "author" as keyof Book, label: "Autor", minWidth: 170 },
-    { id: "publisher" as keyof Book, label: "Editorial", minWidth: 170 },
+  const handleDeleteBook = async (bookId: string) => {
+    const confirmDelete = window.confirm("¿Estás seguro de que deseas eliminar este libro?")
+    if (confirmDelete) {
+      try {
+        await bookService.deleteBook(bookId)
+        onRefreshBooks()
+      } catch (error) {
+        alert("Hubo un error al intentar eliminar el libro")
+      }
+    }
+  }
+
+  const columns: Column<Book>[] = [
+    // Especifica el tipo de Column
+    { id: "title", label: "Título", minWidth: 200 },
+    { id: "author", label: "Autor", minWidth: 170 },
+    { id: "publisher", label: "Editorial", minWidth: 170 },
     {
-      id: "price" as keyof Book,
+      id: "price",
       label: "Precio",
       minWidth: 100,
-      align: "right" as const
+      align: "right"
       // format: (value: number) => `$${value.toFixed(2)}`
     },
     {
-      id: "genre" as keyof Book,
+      id: "genre",
       label: "Género",
       minWidth: 130,
       format: (value: string) => <Chip label={value} size="small" color="primary" variant="outlined" />
     },
     {
-      id: "availability" as keyof Book, // Cambiado de "available" a "availability" para coincidir con tu backend
+      id: "availability",
       label: "Disponibilidad",
       minWidth: 130,
       format: (value: boolean) => <Chip label={value ? "Disponible" : "No disponible"} color={value ? "success" : "error"} size="small" />
+    },
+    {
+      id: "delete",
+      label: "Eliminar",
+      renderCell: (book: Book) => (
+        <IconButton onClick={() => handleDeleteBook(book.id)} sx={{ padding: "8px", color: "red" }}>
+          <DeleteIcon />
+        </IconButton>
+      ),
+      align: "center",
+      preventRowClick: true
     }
   ]
 
