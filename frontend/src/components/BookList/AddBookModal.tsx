@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, FormControl, InputLabel, Select, MenuItem, FormControlLabel, Switch, Grid, CircularProgress, Snackbar, Alert } from "@mui/material"
 
-import { BookGenre } from "../../models/book.models"
+import { BookGenre } from "../../models/book.models" // Asumiendo que tienes un enum para géneros
 import { createBook } from "../../services/bookService"
 
 interface AddBookModalProps {

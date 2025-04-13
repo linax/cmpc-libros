@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import { Paper, Typography, Box, Button, Chip, IconButton } from "@mui/material"
 import AddIcon from "@mui/icons-material/Add"
 import DeleteIcon from "@mui/icons-material/Delete"
+import EditIcon from "@mui/icons-material/Edit"
 import { Book, SortParams } from "../../../src/models/book.models"
 import { DataTable, Column } from "../../../src/components/ui/DataTable/DataTable" // Importa Column
 import { useNavigate } from "react-router-dom"
@@ -45,6 +46,9 @@ export const BookList: React.FC<BookListProps> = ({ books, loading, totalBooks, 
   const handleBookAdded = () => {
     onRefreshBooks()
   }
+  const hnadleEditBook = () => {
+    onRefreshBooks()
+  }
 
   const handleDeleteBook = async (bookId: string) => {
     const confirmDelete = window.confirm("¿Estás seguro de que deseas eliminar este libro?")
@@ -84,11 +88,16 @@ export const BookList: React.FC<BookListProps> = ({ books, loading, totalBooks, 
     },
     {
       id: "delete",
-      label: "Eliminar",
+      label: "Acciones",
       renderCell: (book: Book) => (
-        <IconButton onClick={() => handleDeleteBook(book.id)} sx={{ padding: "8px", color: "red" }}>
-          <DeleteIcon />
-        </IconButton>
+        <Box>
+          <IconButton color="primary" onClick={() => hnadleEditBook()} size="small">
+            <EditIcon />
+          </IconButton>
+          <IconButton color="primary" onClick={() => handleDeleteBook(book.id)} sx={{ padding: "8px", color: "red" }}>
+            <DeleteIcon />
+          </IconButton>
+        </Box>
       ),
       align: "center",
       preventRowClick: true
