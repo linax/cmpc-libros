@@ -25,9 +25,25 @@ export const createBook = async (book: Omit<Book, "id">): Promise<Book> => {
   return data
 }
 
-export const updateBook = async (id: string, book: Partial<Book>): Promise<Book> => {
-  const { data } = await api.put(`/books/${id}`, book)
-  return data
+export const updateBook = async (book: Partial<Book>): Promise<Book> => {
+  try {
+    // Extraemos el ID y el resto de propiedades
+    const { id, ...bookData } = book
+
+    // Aseguramos que las propiedades numéricas sean números
+    const preparedData = {
+      ...bookData,
+      price: bookData.price !== undefined ? Number(bookData.price) : undefined,
+      stock: bookData.stock !== undefined ? Number(bookData.stock) : undefined
+    }
+
+    // Realizamos la petición PATCH
+    const { data } = await api.patch(`/books/${id}`, preparedData)
+    return data
+  } catch (error) {
+    console.error("Error updating book:", error)
+    throw error
+  }
 }
 
 export const deleteBook = async (id: string): Promise<void> => {

@@ -4,9 +4,9 @@ import AddIcon from "@mui/icons-material/Add"
 import DeleteIcon from "@mui/icons-material/Delete"
 import EditIcon from "@mui/icons-material/Edit"
 import { Book, SortParams } from "../../../src/models/book.models"
-import { DataTable, Column } from "../../../src/components/ui/DataTable/DataTable" // Importa Column
+import { DataTable, Column } from "../../../src/components/ui/DataTable/DataTable"
 import { useNavigate } from "react-router-dom"
-import { AddBookModal } from "./AddBookModal"
+import { BookModal } from "./BookModal" // Importamos el nuevo componente
 import * as bookService from "../../services/bookService"
 
 interface BookListProps {
@@ -25,6 +25,7 @@ interface BookListProps {
 export const BookList: React.FC<BookListProps> = ({ books, loading, totalBooks, page, limit, onPageChange, onLimitChange, onSortChange, currentSort, onRefreshBooks }) => {
   const navigate = useNavigate()
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [selectedBook, setSelectedBook] = useState<Book | null>(null)
 
   const handleSortChange = (property: keyof Book) => {
     const isAsc = currentSort.field === property && currentSort.direction === "asc"
@@ -35,19 +36,27 @@ export const BookList: React.FC<BookListProps> = ({ books, loading, totalBooks, 
     navigate(`/books/${id}`)
   }
 
-  const handleOpenModal = () => {
+  const handleOpenModal = (book?: Book) => {
+    if (book) {
+      // Importante: clonar el objeto para evitar modificaciones directas
+      setSelectedBook({ ...book })
+    } else {
+      setSelectedBook(null)
+    }
     setIsModalOpen(true)
   }
 
   const handleCloseModal = () => {
     setIsModalOpen(false)
+    setSelectedBook(null)
   }
 
-  const handleBookAdded = () => {
+  const handleBookSaved = () => {
     onRefreshBooks()
   }
-  const hnadleEditBook = () => {
-    onRefreshBooks()
+
+  const handleEditBook = (book: Book) => {
+    handleOpenModal(book)
   }
 
   const handleDeleteBook = async (bookId: string) => {
@@ -63,7 +72,6 @@ export const BookList: React.FC<BookListProps> = ({ books, loading, totalBooks, 
   }
 
   const columns: Column<Book>[] = [
-    // Especifica el tipo de Column
     { id: "title", label: "Título", minWidth: 200 },
     { id: "author", label: "Autor", minWidth: 170 },
     { id: "publisher", label: "Editorial", minWidth: 170 },
@@ -71,8 +79,12 @@ export const BookList: React.FC<BookListProps> = ({ books, loading, totalBooks, 
       id: "price",
       label: "Precio",
       minWidth: 100,
-      align: "right"
-      // format: (value: number) => `$${value.toFixed(2)}`
+      align: "right",
+      format: (value: any) => {
+        // Asegurarse de que el valor es un número antes de usar toFixed
+        const numValue = typeof value === "string" ? parseFloat(value) : Number(value)
+        return isNaN(numValue) ? "$0.00" : `$${numValue.toFixed(2)}`
+      }
     },
     {
       id: "genre",
@@ -87,14 +99,28 @@ export const BookList: React.FC<BookListProps> = ({ books, loading, totalBooks, 
       format: (value: boolean) => <Chip label={value ? "Disponible" : "No disponible"} color={value ? "success" : "error"} size="small" />
     },
     {
-      id: "delete",
+      id: "actions",
       label: "Acciones",
       renderCell: (book: Book) => (
         <Box>
-          <IconButton color="primary" onClick={() => hnadleEditBook()} size="small">
+          <IconButton
+            color="primary"
+            onClick={e => {
+              e.stopPropagation()
+              handleEditBook(book)
+            }}
+            size="small"
+          >
             <EditIcon />
           </IconButton>
-          <IconButton color="primary" onClick={() => handleDeleteBook(book.id)} sx={{ padding: "8px", color: "red" }}>
+          <IconButton
+            color="primary"
+            onClick={e => {
+              e.stopPropagation()
+              handleDeleteBook(book.id)
+            }}
+            sx={{ padding: "8px", color: "red" }}
+          >
             <DeleteIcon />
           </IconButton>
         </Box>
@@ -116,15 +142,15 @@ export const BookList: React.FC<BookListProps> = ({ books, loading, totalBooks, 
       >
         <Typography variant="h5">Inventario de Libros</Typography>
 
-        <Button variant="contained" color="primary" startIcon={<AddIcon />} onClick={handleOpenModal}>
+        <Button variant="contained" color="primary" startIcon={<AddIcon />} onClick={() => handleOpenModal()}>
           Agregar Libro
         </Button>
       </Box>
 
       <DataTable<Book> columns={columns} data={books} loading={loading} totalItems={totalBooks} page={page} rowsPerPage={limit} onPageChange={onPageChange} onRowsPerPageChange={onLimitChange} onSort={handleSortChange} orderBy={currentSort.field} orderDirection={currentSort.direction} onRowClick={row => goToBookDetails(row.id)} />
 
-      {/* Modal para agregar libro */}
-      <AddBookModal open={isModalOpen} onClose={handleCloseModal} onBookAdded={handleBookAdded} />
+      {/* Modal para agregar o editar libro */}
+      <BookModal open={isModalOpen} onClose={handleCloseModal} onBookSaved={handleBookSaved} bookToEdit={selectedBook} />
     </Paper>
   )
 }

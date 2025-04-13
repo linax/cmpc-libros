@@ -1,17 +1,18 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, FormControl, InputLabel, Select, MenuItem, FormControlLabel, Switch, Grid, CircularProgress, Snackbar, Alert } from "@mui/material"
 
-import { BookGenre } from "../../models/book.models" // Asumiendo que tienes un enum para géneros
-import { createBook } from "../../services/bookService"
+import { Book, BookGenre } from "../../models/book.models"
+import { createBook, updateBook } from "../../services/bookService"
 
-interface AddBookModalProps {
+interface BookModalProps {
   open: boolean
   onClose: () => void
-  onBookAdded: () => void // Callback para refrescar la lista de libros
+  onBookSaved: () => void
+  bookToEdit?: Book | null
 }
 
-export const AddBookModal: React.FC<AddBookModalProps> = ({ open, onClose, onBookAdded }) => {
-  // Estado inicial para un nuevo libro
+export const BookModal: React.FC<BookModalProps> = ({ open, onClose, onBookSaved, bookToEdit }) => {
+  // Estado inicial para un libro (nuevo o a editar)
   const initialBookState = {
     title: "",
     author: "",
@@ -29,12 +30,29 @@ export const AddBookModal: React.FC<AddBookModalProps> = ({ open, onClose, onBoo
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
 
+  // Determinar si estamos en modo edición
+  const isEditMode = Boolean(bookToEdit)
+
+  // Actualizar el formulario cuando se recibe un libro para editar
+  useEffect(() => {
+    if (bookToEdit) {
+      setBookData({
+        ...bookToEdit,
+        // Aseguramos que los campos numéricos sean números
+        price: typeof bookToEdit.price === "string" ? parseFloat(bookToEdit.price) : bookToEdit.price,
+        stock: typeof bookToEdit.stock === "string" ? parseInt(bookToEdit.stock as string, 10) : bookToEdit.stock
+      })
+    } else {
+      setBookData(initialBookState)
+    }
+  }, [bookToEdit, open])
+
   // Maneja cambios en los campos del formulario
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>) => {
     const { name, value } = e.target
     setBookData({
       ...bookData,
-      [name]: value
+      [name as string]: value
     })
   }
 
@@ -46,7 +64,7 @@ export const AddBookModal: React.FC<AddBookModalProps> = ({ open, onClose, onBoo
     })
   }
 
-  // Envía el formulario para crear un nuevo libro
+  // Envía el formulario para crear o actualizar un libro
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
@@ -60,18 +78,37 @@ export const AddBookModal: React.FC<AddBookModalProps> = ({ open, onClose, onBoo
         stock: Number(bookData.stock)
       }
 
-      await createBook(bookToSave)
+      if (isEditMode) {
+        // Solo enviamos las propiedades que queremos actualizar
+        const { id, title, author, publisher, price, genre, description, isbn, availability, stock } = bookToSave
+
+        await updateBook({
+          id,
+          title,
+          author,
+          publisher,
+          price,
+          genre,
+          description,
+          isbn,
+          availability,
+          stock
+        })
+      } else {
+        await createBook(bookToSave)
+      }
+
       setSuccess(true)
-      setBookData(initialBookState)
-      onBookAdded() // Notificar al componente padre para que actualice la lista
+      onBookSaved() // Notificar al componente padre para que actualice la lista
 
       // Cerrar el modal después de un breve retraso
       setTimeout(() => {
         onClose()
       }, 1000)
     } catch (err) {
-      setError("Error al crear el libro. Por favor, inténtalo de nuevo.")
-      console.error("Error creating book:", err)
+      const action = isEditMode ? "actualizar" : "crear"
+      setError(`Error al ${action} el libro. Por favor, inténtalo de nuevo.`)
+      console.error(`Error ${action} book:`, err)
     } finally {
       setLoading(false)
     }
@@ -79,14 +116,18 @@ export const AddBookModal: React.FC<AddBookModalProps> = ({ open, onClose, onBoo
 
   // Función para resetear el formulario
   const handleReset = () => {
-    setBookData(initialBookState)
+    if (isEditMode && bookToEdit) {
+      setBookData(bookToEdit)
+    } else {
+      setBookData(initialBookState)
+    }
     setError(null)
   }
 
   return (
     <>
       <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-        <DialogTitle>Agregar Nuevo Libro</DialogTitle>
+        <DialogTitle>{isEditMode ? "Editar Libro" : "Agregar Nuevo Libro"}</DialogTitle>
         <form onSubmit={handleSubmit}>
           <DialogContent>
             <Grid container spacing={2}>
@@ -144,20 +185,20 @@ export const AddBookModal: React.FC<AddBookModalProps> = ({ open, onClose, onBoo
           </DialogContent>
           <DialogActions sx={{ p: 2 }}>
             <Button onClick={handleReset} color="secondary">
-              Limpiar
+              {isEditMode ? "Restaurar" : "Limpiar"}
             </Button>
             <Button onClick={onClose} color="inherit">
               Cancelar
             </Button>
             <Button type="submit" variant="contained" color="primary" disabled={loading} startIcon={loading && <CircularProgress size={20} />}>
-              Guardar
+              {isEditMode ? "Actualizar" : "Guardar"}
             </Button>
           </DialogActions>
         </form>
       </Dialog>
 
       <Snackbar open={success} autoHideDuration={3000} onClose={() => setSuccess(false)} anchorOrigin={{ vertical: "bottom", horizontal: "center" }}>
-        <Alert severity="success">Libro creado exitosamente!</Alert>
+        <Alert severity="success">{isEditMode ? "Libro actualizado exitosamente!" : "Libro creado exitosamente!"}</Alert>
       </Snackbar>
     </>
   )

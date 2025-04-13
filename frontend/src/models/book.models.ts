@@ -3,9 +3,10 @@ export interface Book {
   title: string
   author: string
   publisher: string
-  price: number
   available: boolean
   genre: string
+  stock: number
+  price: number
   imageUrl?: string
 }
 
