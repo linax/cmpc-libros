@@ -46,16 +46,15 @@ export const BookProvider: React.FC<BookProviderProps> = ({ children }) => {
   // Efecto para buscar libros cuando cambian los parámetros
   useEffect(() => {
     fetchBooks()
-  }, [filters, pagination, sort, debouncedSearchTerm])
+  }, [filters, pagination.page, pagination.limit, sort, debouncedSearchTerm])
 
   const fetchBooks = async () => {
     setLoading(true)
     setError(null)
-
     try {
       const response = await bookService.fetchBooks(filters, pagination, sort, debouncedSearchTerm)
       setBooks(response.data)
-      setTotalBooks(response.data.length)
+      setTotalBooks(response.pagination.total)
     } catch (err) {
       setError("Error al cargar los libros")
       console.error(err)
