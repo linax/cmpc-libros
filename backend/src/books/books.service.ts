@@ -37,18 +37,16 @@ export class BooksService {
       availability
     } = queryDto;
 
-    // Construir las condiciones de búsqueda
     const whereConditions = {};
     
-    // Agregar filtros específicos solo si están definidos
     if (title) whereConditions['title'] = { [Op.like]: `%${title}%` };
     if (author) whereConditions['author'] = { [Op.like]: `%${author}%` };
     if (publisher) whereConditions['publisher'] = { [Op.like]: `%${publisher}%` };
     if (genre) whereConditions['genre'] = genre;
 
-    if (availability !== undefined) whereConditions['availability'] = !availability; // Invertimos el valor
+    if (availability !== undefined) whereConditions['availability'] = !availability;
 
-    // Agregar searchTerm para búsqueda general si está definido
+
     if (search && search.trim() !== '') {
       whereConditions[Op.or] = [
         { title: { [Op.like]: `%${search}%` } },
@@ -65,7 +63,6 @@ export class BooksService {
       sortDirection
     })}`);
 
-    // Realizar la consulta con paginación y ordenación
     const offset = (page - 1) * limit;
     
     const { rows: books, count: total } = await this.bookModel.findAndCountAll({
@@ -75,7 +72,6 @@ export class BooksService {
       order: [[sortBy, sortDirection]],
     });
 
-    // Calcular información de paginación
     const totalPages = Math.ceil(total / limit);
     const hasNextPage = page < totalPages;
     const hasPreviousPage = page > 1;
@@ -117,7 +113,7 @@ export class BooksService {
   async exportToCsv(): Promise<string> {
     const books = await this.bookModel.findAll();
 
-    // Just in case temp directory  doesn't exist
+
     const tempDir = path.join(process.cwd(), 'temp');
     if (!fs.existsSync(tempDir)) {
       fs.mkdirSync(tempDir);

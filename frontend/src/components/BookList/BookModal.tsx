@@ -12,7 +12,6 @@ interface BookModalProps {
 }
 
 export const BookModal: React.FC<BookModalProps> = ({ open, onClose, onBookSaved, bookToEdit }) => {
-  // Estado inicial para un libro (nuevo o a editar)
   const initialBookState = {
     title: "",
     author: "",
@@ -30,15 +29,12 @@ export const BookModal: React.FC<BookModalProps> = ({ open, onClose, onBookSaved
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
 
-  // Determinar si estamos en modo edición
   const isEditMode = Boolean(bookToEdit)
 
-  // Actualizar el formulario cuando se recibe un libro para editar
   useEffect(() => {
     if (bookToEdit) {
       setBookData({
         ...bookToEdit,
-        // Aseguramos que los campos numéricos sean números
         price: typeof bookToEdit.price === "string" ? parseFloat(bookToEdit.price) : bookToEdit.price,
         stock: typeof bookToEdit.stock === "string" ? parseInt(bookToEdit.stock as string, 10) : bookToEdit.stock
       })
@@ -47,7 +43,6 @@ export const BookModal: React.FC<BookModalProps> = ({ open, onClose, onBookSaved
     }
   }, [bookToEdit, open])
 
-  // Maneja cambios en los campos del formulario
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>) => {
     const { name, value } = e.target
     setBookData({
@@ -56,7 +51,6 @@ export const BookModal: React.FC<BookModalProps> = ({ open, onClose, onBookSaved
     })
   }
 
-  // Maneja cambios en el switch de disponibilidad
   const handleAvailabilityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setBookData({
       ...bookData,
@@ -64,14 +58,12 @@ export const BookModal: React.FC<BookModalProps> = ({ open, onClose, onBookSaved
     })
   }
 
-  // Envía el formulario para crear o actualizar un libro
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     setError(null)
 
     try {
-      // Convertimos el precio y stock a números
       const bookToSave = {
         ...bookData,
         price: Number(bookData.price),
@@ -79,7 +71,6 @@ export const BookModal: React.FC<BookModalProps> = ({ open, onClose, onBookSaved
       }
 
       if (isEditMode) {
-        // Solo enviamos las propiedades que queremos actualizar
         const { id, title, author, publisher, price, genre, description, isbn, availability, stock } = bookToSave
 
         await updateBook({
@@ -99,9 +90,8 @@ export const BookModal: React.FC<BookModalProps> = ({ open, onClose, onBookSaved
       }
 
       setSuccess(true)
-      onBookSaved() // Notificar al componente padre para que actualice la lista
+      onBookSaved()
 
-      // Cerrar el modal después de un breve retraso
       setTimeout(() => {
         onClose()
       }, 1000)
@@ -114,7 +104,6 @@ export const BookModal: React.FC<BookModalProps> = ({ open, onClose, onBookSaved
     }
   }
 
-  // Función para resetear el formulario
   const handleReset = () => {
     if (isEditMode && bookToEdit) {
       setBookData(bookToEdit)

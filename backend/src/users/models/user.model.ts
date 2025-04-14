@@ -8,8 +8,8 @@ import {
   DeletedAt,
   BeforeCreate,
   BeforeUpdate,
-} from 'sequelize-typescript';
-import * as bcrypt from 'bcrypt';
+} from 'sequelize-typescript'
+import * as bcrypt from 'bcrypt'
 
 export enum UserRole {
   ADMIN = 'ADMIN',
@@ -27,7 +27,7 @@ export class User extends Model {
     defaultValue: DataType.UUIDV4,
     primaryKey: true,
   })
-  id: string;
+  id: string
 
   @Column({
     type: DataType.STRING,
@@ -37,52 +37,52 @@ export class User extends Model {
       isEmail: true,
     },
   })
-  email: string;
+  email: string
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
-  password: string;
+  password: string
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
-  fullName: string;
+  fullName: string
 
   @Column({
     type: DataType.ENUM(...Object.values(UserRole)),
     allowNull: false,
     defaultValue: UserRole.CLIENT,
   })
-  role: UserRole;
+  role: UserRole
 
   @Column({
     type: DataType.BOOLEAN,
     allowNull: false,
     defaultValue: true,
   })
-  isActive: boolean;
+  isActive: boolean
 
   @CreatedAt
-  createdAt: Date;
+  createdAt: Date
 
   @UpdatedAt
-  updatedAt: Date;
+  updatedAt: Date
 
   @DeletedAt
-  deletedAt: Date;
+  deletedAt: Date
 
   @BeforeCreate
   @BeforeUpdate
   static async hashPassword(instance: User) {
     if (instance.changed('password')) {
-      instance.password = await bcrypt.hash(instance.password, 10);
+      instance.password = await bcrypt.hash(instance.password, 10)
     }
   }
 
   async comparePassword(password: string): Promise<boolean> {
-    return bcrypt.compare(password, this.password);
+    return bcrypt.compare(password, this.password)
   }
 }

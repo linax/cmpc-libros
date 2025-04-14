@@ -16,7 +16,6 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: RegisterDto): Promise<User> {
-    // Check if user with this email already exists
     const existingUser = await this.userModel.findOne({
       where: { email: createUserDto.email },
     });

@@ -1,13 +1,13 @@
-import { Module } from '@nestjs/common';
-import { SequelizeModule } from '@nestjs/sequelize';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { APP_FILTER } from '@nestjs/core';
-import { ConfigModule as AppConfigModule } from './config/config.module';
-import { BooksModule } from './books/books.module';
-import { LoggingModule } from './shared/logging/logging.module';
-//import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
-import { AuthModule } from './auth/auth.module';
-import { UsersModule } from './users/users.module';
+import { Module } from '@nestjs/common'
+import { SequelizeModule } from '@nestjs/sequelize'
+import { ConfigModule, ConfigService } from '@nestjs/config'
+import { APP_FILTER } from '@nestjs/core'
+import { ConfigModule as AppConfigModule } from './config/config.module'
+import { BooksModule } from './books/books.module'
+import { LoggingModule } from './shared/logging/logging.module'
+import { AllExceptionsFilter } from './common/filters/all-exceptions.filter'
+import { AuthModule } from './auth/auth.module'
+import { UsersModule } from './users/users.module'
 
 @Module({
   imports: [
@@ -26,11 +26,11 @@ import { UsersModule } from './users/users.module';
     
     LoggingModule,
   ],
-  /*providers: [
+  providers: [
     {
       provide: APP_FILTER,
       useClass: AllExceptionsFilter,
     },
-  ],*/
+  ],
 })
 export class AppModule {}

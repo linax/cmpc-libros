@@ -17,7 +17,6 @@ export const RegisterPage: React.FC = () => {
     e.preventDefault()
     setError(null)
 
-    // Validaciones básicas
     if (!fullName || !email || !password || !confirmPassword) {
       setError("Por favor, completa todos los campos")
       return

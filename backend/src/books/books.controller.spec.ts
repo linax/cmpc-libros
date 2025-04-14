@@ -1,16 +1,14 @@
-// src/modules/books/books.controller.spec.ts
-import { Test, TestingModule } from '@nestjs/testing';
-import { BooksController } from './books.controller';
-import { BooksService } from './books.service';
-import { CreateBookDto } from './dto/create-book.dto';
-import { UpdateBookDto } from './dto/update-book.dto';
-import { QueryBooksDto } from './dto/query-books.dto';
-import { Logger } from '@nestjs/common';
-import { Response } from 'express';
-import * as fs from 'fs';
-import { BookGenre } from './models/book.model';
+import { Test, TestingModule } from '@nestjs/testing'
+import { BooksController } from './books.controller'
+import { BooksService } from './books.service'
+import { CreateBookDto } from './dto/create-book.dto'
+import { UpdateBookDto } from './dto/update-book.dto'
+import { QueryBooksDto } from './dto/query-books.dto'
+import { Logger } from '@nestjs/common'
+import { Response } from 'express'
+import * as fs from 'fs'
+import { BookGenre } from './models/book.model'
 
-// Mock para el servicio
 const mockBooksService = {
   create: jest.fn(),
   findAll: jest.fn(),
@@ -18,32 +16,30 @@ const mockBooksService = {
   update: jest.fn(),
   remove: jest.fn(),
   exportToCsv: jest.fn(),
-};
+}
 
-// Mock para el objeto Response de Express
 const mockResponse = () => {
-  const res = {} as Response;
-  res.setHeader = jest.fn().mockReturnValue(res);
-  res.status = jest.fn().mockReturnValue(res);
-  res.json = jest.fn().mockReturnValue(res);
-  return res;
-};
+  const res = {} as Response
+  res.setHeader = jest.fn().mockReturnValue(res)
+  res.status = jest.fn().mockReturnValue(res)
+  res.json = jest.fn().mockReturnValue(res)
+  return res
+}
 
-// Mock para createReadStream
 jest.mock('fs', () => ({
   createReadStream: jest.fn().mockReturnValue({
     pipe: jest.fn(),
     on: jest.fn().mockImplementation((event, callback) => {
-      if (event === 'end') callback();
-      return this;
+      if (event === 'end') callback()
+      return this
     }),
   }),
   unlinkSync: jest.fn(),
-}));
+}))
 
 describe('BooksController', () => {
-  let controller: BooksController;
-  let service: BooksService;
+  let controller: BooksController
+  let service: BooksService
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -54,16 +50,16 @@ describe('BooksController', () => {
           useValue: mockBooksService,
         },
       ],
-    }).compile();
+    }).compile()
 
-    controller = module.get<BooksController>(BooksController);
-    service = module.get<BooksService>(BooksService);
-    jest.clearAllMocks();
-  });
+    controller = module.get<BooksController>(BooksController)
+    service = module.get<BooksService>(BooksService)
+    jest.clearAllMocks()
+  })
 
   it('should be defined', () => {
-    expect(controller).toBeDefined();
-  });
+    expect(controller).toBeDefined()
+  })
 
   describe('create', () => {
     it('should create a new book', async () => {
@@ -77,7 +73,7 @@ describe('BooksController', () => {
         availability: true,
         stock: 3,
         publisher: 'Test Publisher',
-      };
+      }
 
       const expectedResult = {
         id: 'book-id',
@@ -85,16 +81,16 @@ describe('BooksController', () => {
         createdAt: new Date(),
         updatedAt: new Date(),
         isDeleted: false,
-      };
+      }
 
-      mockBooksService.create.mockResolvedValue(expectedResult);
+      mockBooksService.create.mockResolvedValue(expectedResult)
 
-      const result = await controller.create(createBookDto);
+      const result = await controller.create(createBookDto)
 
-      expect(service.create).toHaveBeenCalledWith(createBookDto);
-      expect(result).toEqual(expectedResult);
-    });
-  });
+      expect(service.create).toHaveBeenCalledWith(createBookDto)
+      expect(result).toEqual(expectedResult)
+    })
+  })
 
   describe('findAll', () => {
     it('should return all books with pagination', async () => {
@@ -103,7 +99,7 @@ describe('BooksController', () => {
         limit: 10,
         search: 'test',
         sortBy: 'title',
-      };
+      }
 
       const expectedResult = {
         data: [
@@ -131,20 +127,20 @@ describe('BooksController', () => {
           hasNextPage: false,
           hasPreviousPage: false,
         },
-      };
+      }
 
-      mockBooksService.findAll.mockResolvedValue(expectedResult);
+      mockBooksService.findAll.mockResolvedValue(expectedResult)
 
-      const result = await controller.findAll(queryDto);
+      const result = await controller.findAll(queryDto)
 
-      expect(service.findAll).toHaveBeenCalledWith(queryDto);
-      expect(result).toEqual(expectedResult);
-    });
-  });
+      expect(service.findAll).toHaveBeenCalledWith(queryDto)
+      expect(result).toEqual(expectedResult)
+    })
+  })
 
   describe('findOne', () => {
     it('should return a book by id', async () => {
-      const bookId = 'book-id';
+      const bookId = 'book-id'
       const expectedResult = {
         id: bookId,
         title: 'Test Book',
@@ -159,24 +155,24 @@ describe('BooksController', () => {
         createdAt: new Date(),
         updatedAt: new Date(),
         isDeleted: false,
-      };
+      }
 
-      mockBooksService.findOne.mockResolvedValue(expectedResult);
+      mockBooksService.findOne.mockResolvedValue(expectedResult)
 
-      const result = await controller.findOne(bookId);
+      const result = await controller.findOne(bookId)
 
-      expect(service.findOne).toHaveBeenCalledWith(bookId);
-      expect(result).toEqual(expectedResult);
-    });
-  });
+      expect(service.findOne).toHaveBeenCalledWith(bookId)
+      expect(result).toEqual(expectedResult)
+    })
+  })
 
   describe('update', () => {
     it('should update a book', async () => {
-      const bookId = 'book-id';
+      const bookId = 'book-id'
       const updateBookDto: UpdateBookDto = {
         title: 'Updated Book Title',
         price: 39.99,
-      };
+      }
 
       const expectedResult = {
         id: bookId,
@@ -192,46 +188,46 @@ describe('BooksController', () => {
         createdAt: new Date(),
         updatedAt: new Date(),
         isDeleted: false,
-      };
+      }
 
-      mockBooksService.update.mockResolvedValue(expectedResult);
+      mockBooksService.update.mockResolvedValue(expectedResult)
 
-      const result = await controller.update(bookId, updateBookDto);
+      const result = await controller.update(bookId, updateBookDto)
 
-      expect(service.update).toHaveBeenCalledWith(bookId, updateBookDto);
-      expect(result).toEqual(expectedResult);
-    });
-  });
+      expect(service.update).toHaveBeenCalledWith(bookId, updateBookDto)
+      expect(result).toEqual(expectedResult)
+    })
+  })
 
   describe('remove', () => {
     it('should remove a book', async () => {
-      const bookId = 'book-id';
-      mockBooksService.remove.mockResolvedValue(undefined);
+      const bookId = 'book-id'
+      mockBooksService.remove.mockResolvedValue(undefined)
 
-      const result = await controller.remove(bookId);
+      const result = await controller.remove(bookId)
 
-      expect(service.remove).toHaveBeenCalledWith(bookId);
-      expect(result).toEqual({ message: 'Book successfully deleted' });
-    });
-  });
+      expect(service.remove).toHaveBeenCalledWith(bookId)
+      expect(result).toEqual({ message: 'Book successfully deleted' })
+    })
+  })
 
   describe('exportToCsv', () => {
     it('should export books to CSV file', async () => {
-      const filePath = '/tmp/books-export.csv';
-      const res = mockResponse();
+      const filePath = '/tmp/books-export.csv'
+      const res = mockResponse()
 
-      mockBooksService.exportToCsv.mockResolvedValue(filePath);
+      mockBooksService.exportToCsv.mockResolvedValue(filePath)
 
-      await controller.exportToCsv(res as any);
+      await controller.exportToCsv(res as any)
 
-      expect(service.exportToCsv).toHaveBeenCalled();
-      expect(res.setHeader).toHaveBeenCalledWith('Content-Type', 'text/csv');
+      expect(service.exportToCsv).toHaveBeenCalled()
+      expect(res.setHeader).toHaveBeenCalledWith('Content-Type', 'text/csv')
       expect(res.setHeader).toHaveBeenCalledWith(
         'Content-Disposition',
-        'attachment; filename=books-export.csv',
-      );
-      expect(fs.createReadStream).toHaveBeenCalledWith(filePath);
-      expect(fs.unlinkSync).toHaveBeenCalledWith(filePath);
-    });
-  });
-});
+        'attachment filename=books-export.csv',
+      )
+      expect(fs.createReadStream).toHaveBeenCalledWith(filePath)
+      expect(fs.unlinkSync).toHaveBeenCalledWith(filePath)
+    })
+  })
+})

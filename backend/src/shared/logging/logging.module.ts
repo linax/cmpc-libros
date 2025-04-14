@@ -1,10 +1,10 @@
-import { Module, Global } from '@nestjs/common';
-import { WinstonModule } from 'nest-winston';
-import * as winston from 'winston';
+import { Module, Global } from '@nestjs/common'
+import { WinstonModule } from 'nest-winston'
+import * as winston from 'winston'
 
-import { APP_INTERCEPTOR } from '@nestjs/core';
-import { LoggingService } from './logging.service';
-import { LoggingInterceptor } from './logging.interceptor';
+import { APP_INTERCEPTOR } from '@nestjs/core'
+import { LoggingService } from './logging.service'
+import { LoggingInterceptor } from './logging.interceptor'
 
 @Global()
 @Module({

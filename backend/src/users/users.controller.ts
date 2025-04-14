@@ -35,7 +35,6 @@ export class UsersController {
   @Get(':id')
   @LogOperation('get-user')
   async findOne(@Request() req, @Param('id') id: string) {
-    // Users can only see their own profile unless they are admins
     if (req.user.id !== id && req.user.role !== UserRole.ADMIN) {
       throw new ForbiddenException('You can only access your own profile');
     }
@@ -50,12 +49,9 @@ export class UsersController {
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
   ) {
-    // Users can only update their own profile unless they are admins
     if (req.user.id !== id && req.user.role !== UserRole.ADMIN) {
       throw new ForbiddenException('You can only update your own profile');
     }
-
-    // Only admins can change roles
     if (updateUserDto.role && req.user.role !== UserRole.ADMIN) {
       throw new ForbiddenException('Only admins can change roles');
     }

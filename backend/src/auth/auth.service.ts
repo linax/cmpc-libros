@@ -1,9 +1,9 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+import { Injectable, UnauthorizedException } from '@nestjs/common'
+import { JwtService } from '@nestjs/jwt'
 
-import { LoginDto } from './dto/login.dto';
-import { RegisterDto } from './dto/register.dto';
-import { UsersService } from 'src/users/users.service';
+import { LoginDto } from './dto/login.dto'
+import { RegisterDto } from './dto/register.dto'
+import { UsersService } from 'src/users/users.service'
 
 @Injectable()
 export class AuthService {
@@ -13,40 +13,40 @@ export class AuthService {
   ) {}
 
   async validateUser(email: string, password: string): Promise<any> {
-    const user = await this.usersService.findByEmail(email);
+    const user = await this.usersService.findByEmail(email)
 
     if (user && (await user.comparePassword(password))) {
-      const { password, ...result } = user.toJSON();
-      return result;
+      const { password, ...result } = user.toJSON()
+      return result
     }
 
-    return null; 
+    return null 
   }
 
   async login(loginDto: LoginDto) {
-    const user = await this.validateUser(loginDto.email, loginDto.password);
+    const user = await this.validateUser(loginDto.email, loginDto.password)
 
     if (!user) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException('Invalid credentials')
     }
 
-    const payload = { email: user.email, sub: user.id, role: user.role };
+    const payload = { email: user.email, sub: user.id, role: user.role }
 
     return {
       user,
       accessToken: this.jwtService.sign(payload),
-    };
+    }
   }
 
   async register(registerDto: RegisterDto) {
-    const user = await this.usersService.create(registerDto);
-    const { password, ...result } = user.toJSON();
+    const user = await this.usersService.create(registerDto)
+    const { password, ...result } = user.toJSON()
 
-    const payload = { email: result.email, sub: result.id, role: result.role };
+    const payload = { email: result.email, sub: result.id, role: result.role }
 
     return {
       user: result,
       accessToken: this.jwtService.sign(payload),
-    };
+    }
   }
 }

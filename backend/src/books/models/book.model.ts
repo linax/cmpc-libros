@@ -6,7 +6,7 @@ import {
   CreatedAt,
   UpdatedAt,
   DeletedAt,
-} from 'sequelize-typescript';
+} from 'sequelize-typescript'
 
 export enum BookGenre {
   FICTION = 'FICTION',
@@ -33,7 +33,7 @@ export class Book extends Model {
     defaultValue: DataType.UUIDV4,
     primaryKey: true,
   })
-  id: string;
+  id: string
 
   @Column({
     type: DataType.STRING,
@@ -42,7 +42,7 @@ export class Book extends Model {
       notEmpty: true,
     },
   })
-  title: string;
+  title: string
 
   @Column({
     type: DataType.STRING,
@@ -51,59 +51,59 @@ export class Book extends Model {
       notEmpty: true,
     },
   })
-  author: string;
+  author: string
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
-  publisher: string;
+  publisher: string
 
   @Column({
     type: DataType.DECIMAL(10, 2),
     allowNull: false,
   })
-  price: number;
+  price: number
 
   @Column({
     type: DataType.BOOLEAN,
     allowNull: false,
     defaultValue: true,
   })
-  availability: boolean;
+  availability: boolean
 
   @Column({
     type: DataType.ENUM(...Object.values(BookGenre)),
     allowNull: false,
     defaultValue: BookGenre.OTHER,
   })
-  genre: BookGenre;
+  genre: BookGenre
 
   @Column({
     type: DataType.INTEGER,
     allowNull: false,
     defaultValue: 0,
   })
-  stock: number;
+  stock: number
 
   @Column({
     type: DataType.TEXT,
     allowNull: true,
   })
-  description: string;
+  description: string
 
   @Column({
     type: DataType.STRING,
     allowNull: true,
   })
-  isbn: string;
+  isbn: string
 
   @CreatedAt
-  createdAt: Date;
+  createdAt: Date
 
   @UpdatedAt
-  updatedAt: Date;
+  updatedAt: Date
 
   @DeletedAt
-  deletedAt: Date;
+  deletedAt: Date
 }

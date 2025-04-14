@@ -36,7 +36,6 @@ interface RegisterData {
   password: string
 }
 
-// Función para verificar si el token actual ha expirado
 const isTokenExpired = (token: string): boolean => {
   try {
     const decoded = jwtDecode<TokenPayload>(token)
@@ -47,7 +46,6 @@ const isTokenExpired = (token: string): boolean => {
   }
 }
 
-// Función para guardar tokens
 const saveTokens = (accessToken: string, refreshToken?: string): void => {
   localStorage.setItem("accessToken", accessToken)
   if (refreshToken) {
@@ -55,12 +53,10 @@ const saveTokens = (accessToken: string, refreshToken?: string): void => {
   }
 }
 
-// Función para obtener el token de acceso
 export const getAccessToken = (): string | null => {
   return localStorage.getItem("accessToken")
 }
 
-// Función para refrescar el token cuando expire
 export const refreshAuthToken = async (): Promise<string> => {
   const refreshToken = localStorage.getItem("refreshToken")
 
@@ -82,7 +78,6 @@ export const refreshAuthToken = async (): Promise<string> => {
   }
 }
 
-// Decodificar información del usuario desde el token
 export const getUserFromToken = (token: string): User | null => {
   try {
     const decoded = jwtDecode<TokenPayload>(token)
@@ -132,7 +127,6 @@ export const register = async (userData: RegisterData): Promise<User | null> => 
 export const logout = async (): Promise<void> => {
   const refreshToken = localStorage.getItem("refreshToken")
 
-  // Invalidar el token en el servidor (opcional pero recomendado)
   if (refreshToken) {
     try {
       await apiClient.post("/auth/logout", { refreshToken })
@@ -141,7 +135,6 @@ export const logout = async (): Promise<void> => {
     }
   }
 
-  // Eliminar tokens del almacenamiento local
   localStorage.removeItem("accessToken")
   localStorage.removeItem("refreshToken")
 }
@@ -156,15 +149,7 @@ export const getCurrentUser = async (): Promise<User | null> => {
   if (isTokenExpired(token)) {
     try {
       await refreshAuthToken()
-
-      /* try {
-        const { data } = await apiClient.get<User>("/auth/me")
-        return data
-      } catch {
-        return getUserFromToken(newToken)
-      }*/
     } catch {
-      // Si falla el refresh, limpiar tokens y retornar null
       localStorage.removeItem("accessToken")
       localStorage.removeItem("refreshToken")
       return null

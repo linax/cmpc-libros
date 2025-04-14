@@ -15,9 +15,6 @@ interface BookContextProps {
   setSort: (sort: SortParams) => void
   setSearchTerm: (searchTerm: string) => void
   fetchBooks: () => Promise<void>
-  // genres: string[]
-  // publishers: string[]
-  // authors: string[]
 }
 
 export const BookContext = createContext<BookContextProps>({} as BookContextProps)

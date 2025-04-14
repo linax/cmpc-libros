@@ -1,4 +1,4 @@
-import { SetMetadata } from '@nestjs/common';
+import { SetMetadata } from '@nestjs/common'
 
 export const LogOperation = (operation: string) =>
-  SetMetadata('operation', operation);
+  SetMetadata('operation', operation)

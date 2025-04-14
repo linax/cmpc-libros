@@ -2,18 +2,16 @@ import React from "react"
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TablePagination, CircularProgress, Box, Typography, TableSortLabel } from "@mui/material"
 
 interface Column<T> {
-  // Recibe un tipo genérico T
   id: keyof T
   label: string
   minWidth?: number
   align?: "right" | "left" | "center"
-  format?: (value: any) => React.ReactNode | string | number | boolean // Permite ReactNode
-  renderCell?: (row: T) => React.ReactNode // Nueva propiedad para renderización personalizada
-  preventRowClick?: boolean // Nueva propiedad
+  format?: (value: any) => React.ReactNode | string | number | boolean
+  renderCell?: (row: T) => React.ReactNode
+  preventRowClick?: boolean
 }
 
 interface DataTableProps<T> {
-  // Recibe un tipo genérico T
   columns: Column<T>[]
   data: T[]
   loading: boolean
@@ -25,24 +23,10 @@ interface DataTableProps<T> {
   onSort?: (property: keyof T) => void
   orderBy?: keyof T
   orderDirection?: "asc" | "desc"
-  onRowClick?: (row: T) => void // Prop para manejar el click en la fila
+  onRowClick?: (row: T) => void
 }
 
-export function DataTable<T extends object>({
-  // Asegura que T es un objeto
-  columns,
-  data,
-  loading,
-  totalItems,
-  page,
-  rowsPerPage,
-  onPageChange,
-  onRowsPerPageChange,
-  onSort,
-  orderBy,
-  orderDirection = "asc",
-  onRowClick
-}: DataTableProps<T>) {
+export function DataTable<T extends object>({ columns, data, loading, totalItems, page, rowsPerPage, onPageChange, onRowsPerPageChange, onSort, orderBy, orderDirection = "asc", onRowClick }: DataTableProps<T>) {
   const handleChangePage = (_: unknown, newPage: number) => {
     onPageChange(newPage + 1)
   }
@@ -64,7 +48,7 @@ export function DataTable<T extends object>({
           <TableRow>
             {columns.map(column => (
               <TableCell key={column.id} align={column.align} style={{ minWidth: column.minWidth }}>
-                {onSort && column.id !== "delete" ? ( // No permitir ordenar en la columna de eliminar
+                {onSort && column.id !== "delete" ? (
                   <TableSortLabel active={orderBy === column.id} direction={orderBy === column.id ? orderDirection : "asc"} onClick={handleSort(column.id)}>
                     {column.label}
                   </TableSortLabel>
@@ -91,10 +75,9 @@ export function DataTable<T extends object>({
           ) : (
             data.map(row => (
               <TableRow
-                key={Object.values(row).join("-")} // Asegúrate de que la clave sea única
+                key={Object.values(row).join("-")}
                 onClick={event => {
                   const clickedElement = event.target as HTMLElement
-                  // Verifica si el clic ocurrió dentro de un elemento que debería prevenir el click de la fila
                   if (onRowClick && !clickedElement.closest("button, a, input")) {
                     onRowClick(row)
                   }
@@ -103,11 +86,7 @@ export function DataTable<T extends object>({
               >
                 {columns.map(column => (
                   <TableCell key={column.id} align={column.align}>
-                    {column.renderCell
-                      ? column.renderCell(row) // Renderiza el contenido personalizado
-                      : column.format
-                      ? column.format(row[column.id])
-                      : row[column.id]}
+                    {column.renderCell ? column.renderCell(row) : column.format ? column.format(row[column.id]) : row[column.id]}
                   </TableCell>
                 ))}
               </TableRow>

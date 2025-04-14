@@ -13,7 +13,6 @@ interface AuthContextType {
   changePassword: (oldPassword: string, newPassword: string) => Promise<void>
 }
 
-// Crear el contexto con un valor por defecto
 export const AuthContext = createContext<AuthContextType>({
   user: null,
   loading: true,

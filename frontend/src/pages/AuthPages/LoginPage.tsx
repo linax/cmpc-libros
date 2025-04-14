@@ -23,7 +23,6 @@ export const LoginPage: React.FC = () => {
     try {
       await login(email, password)
       navigate(ROUTES.BOOKS)
-      // La redirección se maneja en el AuthProvider
     } catch (err: any) {
       setError(err.message || "Error al iniciar sesión")
     }

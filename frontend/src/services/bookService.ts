@@ -27,17 +27,14 @@ export const createBook = async (book: Omit<Book, "id">): Promise<Book> => {
 
 export const updateBook = async (book: Partial<Book>): Promise<Book> => {
   try {
-    // Extraemos el ID y el resto de propiedades
     const { id, ...bookData } = book
 
-    // Aseguramos que las propiedades numéricas sean números
     const preparedData = {
       ...bookData,
       price: bookData.price !== undefined ? Number(bookData.price) : undefined,
       stock: bookData.stock !== undefined ? Number(bookData.stock) : undefined
     }
 
-    // Realizamos la petición PATCH
     const { data } = await apiClient.patch(`/books/${id}`, preparedData)
     return data
   } catch (error) {
@@ -50,7 +47,6 @@ export const deleteBook = async (id: string): Promise<void> => {
   await apiClient.delete(`/books/${id}`)
 }
 
-// Obtener opciones para filtros
 export const fetchGenres = async (): Promise<string[]> => {
   const { data } = await apiClient.get("/books/genres")
   return data

@@ -6,7 +6,7 @@ import EditIcon from "@mui/icons-material/Edit"
 import { Book, SortParams } from "../../../src/models/book.models"
 import { DataTable, Column } from "../../../src/components/ui/DataTable/DataTable"
 import { useNavigate } from "react-router-dom"
-import { BookModal } from "./BookModal" // Importamos el nuevo componente
+import { BookModal } from "./BookModal"
 import * as bookService from "../../services/bookService"
 
 interface BookListProps {
@@ -38,7 +38,6 @@ export const BookList: React.FC<BookListProps> = ({ books, loading, totalBooks, 
 
   const handleOpenModal = (book?: Book) => {
     if (book) {
-      // Importante: clonar el objeto para evitar modificaciones directas
       setSelectedBook({ ...book })
     } else {
       setSelectedBook(null)
@@ -81,7 +80,6 @@ export const BookList: React.FC<BookListProps> = ({ books, loading, totalBooks, 
       minWidth: 100,
       align: "right",
       format: (value: any) => {
-        // Asegurarse de que el valor es un número antes de usar toFixed
         const numValue = typeof value === "string" ? parseFloat(value) : Number(value)
         return isNaN(numValue) ? "$0.00" : `$${numValue.toFixed(2)}`
       }

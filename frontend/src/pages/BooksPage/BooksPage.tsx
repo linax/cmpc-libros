@@ -12,18 +12,18 @@ export const BooksPage: React.FC = () => {
 
   const handleFilterChange = (newFilters: BookFiltersType) => {
     setFilters(newFilters)
-    setPagination({ ...pagination, page: 1 }) // Reset to first page on filter change
+    setPagination({ ...pagination, page: 1 })
   }
 
   const handleSearchChange = (term: string) => {
     setSearchTerm(term)
-    setPagination({ ...pagination, page: 1 }) // Reset to first page on search
+    setPagination({ ...pagination, page: 1 })
   }
 
   const handleClearFilters = () => {
     setFilters({})
     setSearchTerm("")
-    setPagination({ ...pagination, page: 1 }) // Reset to first page
+    setPagination({ ...pagination, page: 1 })
   }
 
   const handlePageChange = (page: number) => {
@@ -38,7 +38,6 @@ export const BooksPage: React.FC = () => {
     setSort(newSort)
   }
 
-  // Nueva función para refrescar los libros cuando se añade uno nuevo
   const handleRefreshBooks = () => {
     fetchBooks()
   }
@@ -48,9 +47,6 @@ export const BooksPage: React.FC = () => {
       <NavBar />
       <Box sx={{ padding: 3 }}>
         <Container maxWidth="lg" sx={{ py: 4 }}>
-          {/* TODO: Change this line when add genres, author, publisher
-      <BookFilters filters={filters} searchTerm={searchTerm} onFilterChange={handleFilterChange} onSearchChange={handleSearchChange} onClearFilters={handleClearFilters} genres={genres} publishers={publishers} authors={authors} />
-      */}
           <BookFilters filters={filters} searchTerm={searchTerm} onSearchChange={handleSearchChange} onClearFilters={handleClearFilters} onFilterChange={handleFilterChange} />
 
           <BookList books={books} loading={loading} totalBooks={totalBooks} page={pagination.page} limit={pagination.limit} onPageChange={handlePageChange} onLimitChange={handleLimitChange} onSortChange={handleSortChange} currentSort={sort} onRefreshBooks={handleRefreshBooks} />

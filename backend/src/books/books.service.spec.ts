@@ -1,4 +1,3 @@
-// src/modules/books/books.service.spec.ts
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/sequelize';
 import { NotFoundException } from '@nestjs/common';
@@ -182,7 +181,7 @@ describe('BooksService', () => {
           author: { [Op.like]: '%Book Author%' },
           publisher: { [Op.like]: '%Book Publisher%' },
           genre: BookGenre.FICTION,
-          availability: false,  // Invertido como se indica en el servicio
+          availability: false, 
           [Op.or]: [
             { title: { [Op.like]: '%test%' } },
             { author: { [Op.like]: '%test%' } },
@@ -344,20 +343,16 @@ describe('BooksService', () => {
       mockBookModel.findAll.mockResolvedValue(mockBooks);
       (fs.existsSync as jest.Mock).mockReturnValue(false);
 
-      // Ejecutar el método
       const result = await service.exportToCsv();
 
-      // Verificar que se creó el directorio temporal si no existía
       expect(fs.existsSync).toHaveBeenCalledWith('/mocked/path');
       expect(fs.mkdirSync).toHaveBeenCalledWith('/mocked/path');
 
-      // Verificar el resultado
       expect(result).toEqual('/mocked/path');
 
-      // Verificar que se llamó a findAll
+
       expect(mockBookModel.findAll).toHaveBeenCalled();
 
-      // Verificar que se convertieron los libros a JSON
       expect(mockBooks[0].toJSON).toHaveBeenCalled();
     });
 
