@@ -1,38 +1,37 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { getModelToken } from '@nestjs/sequelize';
-import { NotFoundException } from '@nestjs/common';
-import * as fs from 'fs';
-import * as path from 'path';
-import { Op } from 'sequelize';
-import { BooksService } from './books.service';
-import { Book, BookGenre } from './models/book.model';
-import { CreateBookDto } from './dto/create-book.dto';
-import { UpdateBookDto } from './dto/update-book.dto';
-import { QueryBooksDto } from './dto/query-books.dto';
-
+import { Test, TestingModule } from '@nestjs/testing'
+import { getModelToken } from '@nestjs/sequelize'
+import { NotFoundException } from '@nestjs/common'
+import * as fs from 'fs'
+import * as path from 'path'
+import { Op } from 'sequelize'
+import { BooksService } from './books.service'
+import { Book, BookGenre } from './models/book.model'
+import { CreateBookDto } from './dto/create-book.dto'
+import { UpdateBookDto } from './dto/update-book.dto'
+import { QueryBooksDto } from './dto/query-books.dto'
 
 jest.mock('csv-writer', () => ({
   createObjectCsvWriter: jest.fn().mockImplementation(() => ({
     writeRecords: jest.fn().mockResolvedValue(undefined),
   })),
-}));
+}))
 
 jest.mock('fs', () => ({
   existsSync: jest.fn(),
   mkdirSync: jest.fn(),
-}));
+}))
 
 jest.mock('path', () => ({
   join: jest.fn().mockReturnValue('/mocked/path'),
-}));
+}))
 
 jest.mock('uuid', () => ({
   v4: jest.fn().mockReturnValue('mocked-uuid'),
-}));
+}))
 
 describe('BooksService', () => {
-  let service: BooksService;
-  let mockBookModel: any;
+  let service: BooksService
+  let mockBookModel: any
 
   beforeEach(async () => {
     mockBookModel = {
@@ -40,7 +39,7 @@ describe('BooksService', () => {
       findAll: jest.fn(),
       findByPk: jest.fn(),
       findAndCountAll: jest.fn(),
-    };
+    }
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -50,14 +49,14 @@ describe('BooksService', () => {
           useValue: mockBookModel,
         },
       ],
-    }).compile();
+    }).compile()
 
-    service = module.get<BooksService>(BooksService);
-  });
+    service = module.get<BooksService>(BooksService)
+  })
 
   it('should be defined', () => {
-    expect(service).toBeDefined();
-  });
+    expect(service).toBeDefined()
+  })
 
   describe('create', () => {
     it('should create a new book', async () => {
@@ -67,11 +66,11 @@ describe('BooksService', () => {
         publisher: 'Test Publisher',
         price: 29.99,
         genre: BookGenre.FICTION,
-         availability: true,
+        availability: true,
         stock: 10,
         description: 'A test book description',
         isbn: '1234567890123',
-      };
+      }
 
       const mockBook = {
         id: 'test-uuid',
@@ -79,20 +78,20 @@ describe('BooksService', () => {
         availability: true,
         createdAt: new Date(),
         updatedAt: new Date(),
-      };
+      }
 
-      mockBookModel.create.mockResolvedValue(mockBook);
+      mockBookModel.create.mockResolvedValue(mockBook)
 
-      const result = await service.create(createBookDto);
+      const result = await service.create(createBookDto)
 
-      expect(mockBookModel.create).toHaveBeenCalledWith(createBookDto);
-      expect(result).toEqual(mockBook);
-    });
-  });
+      expect(mockBookModel.create).toHaveBeenCalledWith(createBookDto)
+      expect(result).toEqual(mockBook)
+    })
+  })
 
   describe('findAll', () => {
     it('should return all books with pagination (default parameters)', async () => {
-      const queryDto = new QueryBooksDto();
+      const queryDto = new QueryBooksDto()
       const mockBooks = [
         {
           id: 'book-1',
@@ -108,21 +107,21 @@ describe('BooksService', () => {
           createdAt: new Date(),
           updatedAt: new Date(),
         },
-      ];
+      ]
 
       mockBookModel.findAndCountAll.mockResolvedValue({
         rows: mockBooks,
         count: 1,
-      });
+      })
 
-      const result = await service.findAll(queryDto);
+      const result = await service.findAll(queryDto)
 
       expect(mockBookModel.findAndCountAll).toHaveBeenCalledWith({
         where: {},
         limit: 10,
         offset: 0,
         order: [['createdAt', 'asc']],
-      });
+      })
 
       expect(result).toEqual({
         data: mockBooks,
@@ -134,8 +133,8 @@ describe('BooksService', () => {
           hasNextPage: false,
           hasPreviousPage: false,
         },
-      });
-    });
+      })
+    })
 
     it('should apply filters when provided', async () => {
       const queryDto: QueryBooksDto = {
@@ -149,7 +148,7 @@ describe('BooksService', () => {
         publisher: 'Book Publisher',
         genre: BookGenre.FICTION,
         availability: true,
-      };
+      }
 
       const mockBooks = [
         {
@@ -166,14 +165,14 @@ describe('BooksService', () => {
           createdAt: new Date(),
           updatedAt: new Date(),
         },
-      ];
+      ]
 
       mockBookModel.findAndCountAll.mockResolvedValue({
         rows: mockBooks,
         count: 11,
-      });
+      })
 
-      const result = await service.findAll(queryDto);
+      const result = await service.findAll(queryDto)
 
       expect(mockBookModel.findAndCountAll).toHaveBeenCalledWith({
         where: {
@@ -181,7 +180,7 @@ describe('BooksService', () => {
           author: { [Op.like]: '%Book Author%' },
           publisher: { [Op.like]: '%Book Publisher%' },
           genre: BookGenre.FICTION,
-          availability: false, 
+          availability: false,
           [Op.or]: [
             { title: { [Op.like]: '%test%' } },
             { author: { [Op.like]: '%test%' } },
@@ -189,9 +188,9 @@ describe('BooksService', () => {
           ],
         },
         limit: 5,
-        offset: 5,  // (page - 1) * limit = (2 - 1) * 5 = 5
+        offset: 5, // (page - 1) * limit = (2 - 1) * 5 = 5
         order: [['title', 'desc']],
-      });
+      })
 
       expect(result).toEqual({
         data: mockBooks,
@@ -203,13 +202,13 @@ describe('BooksService', () => {
           hasNextPage: true,
           hasPreviousPage: true,
         },
-      });
-    });
-  });
+      })
+    })
+  })
 
   describe('findOne', () => {
     it('should return a book by id', async () => {
-      const bookId = 'test-uuid';
+      const bookId = 'test-uuid'
       const mockBook = {
         id: bookId,
         title: 'Test Book',
@@ -223,33 +222,33 @@ describe('BooksService', () => {
         isbn: '1234567890123',
         createdAt: new Date(),
         updatedAt: new Date(),
-      };
+      }
 
-      mockBookModel.findByPk.mockResolvedValue(mockBook);
+      mockBookModel.findByPk.mockResolvedValue(mockBook)
 
-      const result = await service.findOne(bookId);
+      const result = await service.findOne(bookId)
 
-      expect(mockBookModel.findByPk).toHaveBeenCalledWith(bookId);
-      expect(result).toEqual(mockBook);
-    });
+      expect(mockBookModel.findByPk).toHaveBeenCalledWith(bookId)
+      expect(result).toEqual(mockBook)
+    })
 
     it('should throw NotFoundException when book not found', async () => {
-      const bookId = 'non-existent-id';
-      mockBookModel.findByPk.mockResolvedValue(null);
+      const bookId = 'non-existent-id'
+      mockBookModel.findByPk.mockResolvedValue(null)
 
       await expect(service.findOne(bookId)).rejects.toThrow(
-        new NotFoundException(`Book with ID ${bookId} not found`)
-      );
-    });
-  });
+        new NotFoundException(`Book with ID ${bookId} not found`),
+      )
+    })
+  })
 
   describe('update', () => {
     it('should update a book', async () => {
-      const bookId = 'test-uuid';
+      const bookId = 'test-uuid'
       const updateBookDto: UpdateBookDto = {
         title: 'Updated Title',
         price: 39.99,
-      };
+      }
 
       const mockBook = {
         id: bookId,
@@ -265,62 +264,62 @@ describe('BooksService', () => {
         createdAt: new Date(),
         updatedAt: new Date(),
         update: jest.fn().mockImplementation(function (dto) {
-          Object.assign(this, dto);
-          return Promise.resolve(this);
+          Object.assign(this, dto)
+          return Promise.resolve(this)
         }),
-      };
+      }
 
-      mockBookModel.findByPk.mockResolvedValue(mockBook);
+      mockBookModel.findByPk.mockResolvedValue(mockBook)
 
-      const result = await service.update(bookId, updateBookDto);
+      const result = await service.update(bookId, updateBookDto)
 
-      expect(mockBookModel.findByPk).toHaveBeenCalledWith(bookId);
-      expect(mockBook.update).toHaveBeenCalledWith(updateBookDto);
-      expect(result.title).toEqual('Updated Title');
-      expect(result.price).toEqual(39.99);
-    });
+      expect(mockBookModel.findByPk).toHaveBeenCalledWith(bookId)
+      expect(mockBook.update).toHaveBeenCalledWith(updateBookDto)
+      expect(result.title).toEqual('Updated Title')
+      expect(result.price).toEqual(39.99)
+    })
 
     it('should throw NotFoundException when trying to update non-existent book', async () => {
-      const bookId = 'non-existent-id';
+      const bookId = 'non-existent-id'
       const updateBookDto: UpdateBookDto = {
         title: 'Updated Title',
-      };
+      }
 
-      mockBookModel.findByPk.mockResolvedValue(null);
+      mockBookModel.findByPk.mockResolvedValue(null)
 
       await expect(service.update(bookId, updateBookDto)).rejects.toThrow(
-        new NotFoundException(`Book with ID ${bookId} not found`)
-      );
-    });
-  });
+        new NotFoundException(`Book with ID ${bookId} not found`),
+      )
+    })
+  })
 
   describe('remove', () => {
     it('should remove a book', async () => {
-      const bookId = 'test-uuid';
+      const bookId = 'test-uuid'
       const mockBook = {
         id: bookId,
         destroy: jest.fn().mockResolvedValue(undefined),
-      };
+      }
 
-      mockBookModel.findByPk.mockResolvedValue(mockBook);
+      mockBookModel.findByPk.mockResolvedValue(mockBook)
 
-      await service.remove(bookId);
+      await service.remove(bookId)
 
-      expect(mockBookModel.findByPk).toHaveBeenCalledWith(bookId);
-      expect(mockBook.destroy).toHaveBeenCalled();
-    });
+      expect(mockBookModel.findByPk).toHaveBeenCalledWith(bookId)
+      expect(mockBook.destroy).toHaveBeenCalled()
+    })
 
     it('should throw NotFoundException when trying to remove non-existent book', async () => {
-      const bookId = 'non-existent-id';
-      mockBookModel.findByPk.mockResolvedValue(null);
+      const bookId = 'non-existent-id'
+      mockBookModel.findByPk.mockResolvedValue(null)
 
       await expect(service.remove(bookId)).rejects.toThrow(
-        new NotFoundException(`Book with ID ${bookId} not found`)
-      );
-    });
-  });
+        new NotFoundException(`Book with ID ${bookId} not found`),
+      )
+    })
+  })
 
- /* describe('exportToCsv', () => {
+  /* describe('exportToCsv', () => {
     it('should export books to CSV file', async () => {
       const mockBooks = [
         {
@@ -373,4 +372,4 @@ describe('BooksService', () => {
       expect(fs.mkdirSync).not.toHaveBeenCalled();
     });
   });*/
-});
+})

@@ -1,7 +1,7 @@
-import { Sequelize } from 'sequelize-typescript';
-import { ConfigService } from '@nestjs/config';
-import { Book } from '../books/models/book.model';
-import { User } from 'src/users/models/user.model';
+import { Sequelize } from 'sequelize-typescript'
+import { ConfigService } from '@nestjs/config'
+import { Book } from '../books/models/book.model'
+import { User } from 'src/users/models/user.model'
 
 export const databaseProviders = [
   {
@@ -19,12 +19,12 @@ export const databaseProviders = [
           timestamps: true,
           paranoid: true, // Enable soft deletes
         },
-      });
+      })
 
-      sequelize.addModels([Book, User]);
-      await sequelize.sync();
-      return sequelize;
+      sequelize.addModels([Book, User])
+      await sequelize.sync()
+      return sequelize
     },
     inject: [ConfigService],
   },
-];
+]

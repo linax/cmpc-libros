@@ -1,4 +1,4 @@
-import { QueryInterface } from 'sequelize';
+import { QueryInterface } from 'sequelize'
 
 export async function up(queryInterface: QueryInterface): Promise<void> {
   await queryInterface.bulkInsert('Books', [
@@ -22,9 +22,9 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
       createdAt: new Date(),
       updatedAt: new Date(),
     },
-  ]);
+  ])
 }
 
 export async function down(queryInterface: QueryInterface): Promise<void> {
-  await queryInterface.bulkDelete('Books', {}, {});
+  await queryInterface.bulkDelete('Books', {}, {})
 }

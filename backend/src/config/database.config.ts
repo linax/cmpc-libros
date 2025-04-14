@@ -1,4 +1,4 @@
-import { registerAs } from '@nestjs/config';
+import { registerAs } from '@nestjs/config'
 
 export default registerAs('database', () => ({
   dialect: 'postgres',
@@ -10,4 +10,4 @@ export default registerAs('database', () => ({
   autoLoadModels: true,
   synchronize: process.env.NODE_ENV !== 'production',
   logging: process.env.NODE_ENV !== 'production',
-}));
+}))
