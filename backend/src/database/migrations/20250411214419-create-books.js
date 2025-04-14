@@ -1,4 +1,4 @@
-import { QueryInterface, DataTypes } from 'sequelize';
+import { QueryInterface, DataTypes } from 'sequelize'
 
 export async function up(queryInterface: QueryInterface): Promise<void> {
   await queryInterface.createTable('Books', {
@@ -46,9 +46,9 @@ export async function up(queryInterface: QueryInterface): Promise<void> {
       type: DataTypes.DATE,
       allowNull: true,
     },
-  });
+  })
 }
 
 export async function down(queryInterface: QueryInterface): Promise<void> {
-  await queryInterface.dropTable('Books');
+  await queryInterface.dropTable('Books')
 }
