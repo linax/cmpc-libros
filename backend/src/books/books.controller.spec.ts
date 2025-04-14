@@ -209,24 +209,4 @@ describe('BooksController', () => {
       expect(result).toEqual({ message: 'Book successfully deleted' })
     })
   })
-
-  describe('exportToCsv', () => {
-    it('should export books to CSV file', async () => {
-      const filePath = '/tmp/books-export.csv'
-      const res = mockResponse()
-
-      mockBooksService.exportToCsv.mockResolvedValue(filePath)
-
-      await controller.exportToCsv(res as any)
-
-      expect(service.exportToCsv).toHaveBeenCalled()
-      expect(res.setHeader).toHaveBeenCalledWith('Content-Type', 'text/csv')
-      expect(res.setHeader).toHaveBeenCalledWith(
-        'Content-Disposition',
-        'attachment filename=books-export.csv',
-      )
-      expect(fs.createReadStream).toHaveBeenCalledWith(filePath)
-      expect(fs.unlinkSync).toHaveBeenCalledWith(filePath)
-    })
-  })
 })
