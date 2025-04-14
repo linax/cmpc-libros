@@ -1,5 +1,5 @@
 import apiClient from "./api"
-import { Book, BookFilters, PaginationParams, SortParams, BooksResponse } from "../models/book.models"
+import { Book, BookFilters, PaginationParams, SortParams, BooksResponse } from "../models/book"
 
 export const fetchBooks = async (filters: BookFilters = {}, pagination: PaginationParams = { page: 1, limit: 10 }, sort: SortParams = { field: "title", direction: "asc" }, searchTerm: string = ""): Promise<BooksResponse> => {
   const { data } = await apiClient.get("/books", {

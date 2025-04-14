@@ -1,4 +1,4 @@
-import { User } from "../models/user.models"
+import { User } from "../models/user"
 import apiClient from "./api"
 import { jwtDecode } from "jwt-decode"
 

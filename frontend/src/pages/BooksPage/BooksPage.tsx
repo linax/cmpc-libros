@@ -2,7 +2,7 @@ import React from "react"
 import { Container, Alert, Snackbar, Box } from "@mui/material"
 
 import { useBooks } from "../../contexts/BookContext/useBooks"
-import { BookFilters as BookFiltersType, SortParams } from "../../models/book.models"
+import { BookFilters as BookFiltersType, SortParams } from "../../models/book"
 import { BookFilters } from "../../components/BookFilters/BookFilters"
 import { BookList } from "../../components/BookList/BookList"
 import { NavBar } from "../../components/NavBar/NavBar"

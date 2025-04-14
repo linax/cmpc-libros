@@ -1,5 +1,5 @@
 import { createContext } from "react"
-import { Book, BookFilters, PaginationParams, SortParams } from "../../models/book.models"
+import { Book, BookFilters, PaginationParams, SortParams } from "../../models/book"
 
 interface BookContextProps {
   books: Book[]

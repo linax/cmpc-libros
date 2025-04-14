@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { PaginationParams } from "../models/book.models"
+import { PaginationParams } from "../models/book"
 
 export const usePagination = (initialPage = 1, initialLimit = 10) => {
   const [pagination, setPagination] = useState<PaginationParams>({

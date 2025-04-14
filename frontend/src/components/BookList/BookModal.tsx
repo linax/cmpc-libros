@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, FormControl, InputLabel, Select, MenuItem, FormControlLabel, Switch, Grid, CircularProgress, Snackbar, Alert } from "@mui/material"
 
-import { Book, BookGenre } from "../../models/book.models"
+import { Book, BookGenre } from "../../models/book"
 import { createBook, updateBook } from "../../services/bookService"
 
 interface BookModalProps {

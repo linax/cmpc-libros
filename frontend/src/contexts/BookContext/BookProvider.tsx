@@ -1,6 +1,6 @@
 import React, { useState, useEffect, ReactNode } from "react"
 import { BookContext } from "./BookContext"
-import { Book, BookFilters, PaginationParams, SortParams } from "../../models/book.models"
+import { Book, BookFilters, PaginationParams, SortParams } from "../../models/book"
 import * as bookService from "../../services/bookService"
 import { useDebounce } from "../../hooks/useDebounce"
 

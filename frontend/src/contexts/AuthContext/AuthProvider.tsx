@@ -1,7 +1,7 @@
 import React, { useState, useEffect, ReactNode } from "react"
 
 import * as authService from "../../services/authService"
-import { User } from "../../models/user.models"
+import { User } from "../../models/user"
 import { AuthContext } from "./AuthContext"
 
 // Props para el provider

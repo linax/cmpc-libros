@@ -1,6 +1,6 @@
 import React from "react"
 import { Paper, Grid, FormControlLabel, Switch, Typography, Button, Box } from "@mui/material"
-import { BookFilters as BookFiltersType } from "../../../src/models/book.models"
+import { BookFilters as BookFiltersType } from "../../models/book"
 import { SearchField } from "../../../src/components/common/SearchField/SearchField"
 
 interface BookFiltersProps {
