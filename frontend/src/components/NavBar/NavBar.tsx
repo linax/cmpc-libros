@@ -24,11 +24,6 @@ export const NavBar: React.FC = () => {
     navigate(ROUTES.HOME)
   }
 
-  /*  const handleProfile = () => {
-    handleClose()
-    navigate(ROUTES.PROFILE)
-  }
-*/
   return (
     <AppBar position="static">
       <Toolbar>
@@ -37,15 +32,11 @@ export const NavBar: React.FC = () => {
         </IconButton>
 
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          Librería App
+          CMPC - Libros Web App
         </Typography>
 
         {isAuthenticated ? (
           <>
-            <Button color="inherit" component={RouterLink} to={ROUTES.BOOKS}>
-              Libros
-            </Button>
-
             <Box sx={{ ml: 2 }}>
               <IconButton size="large" aria-label="cuenta del usuario" aria-controls="menu-appbar" aria-haspopup="true" onClick={handleMenu} color="inherit">
                 {user?.name ? <Avatar sx={{ width: 32, height: 32, bgcolor: "secondary.main" }}>{user.name.charAt(0).toUpperCase()}</Avatar> : <AccountCircle />}

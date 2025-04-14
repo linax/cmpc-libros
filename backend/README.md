@@ -56,7 +56,14 @@ $ npm run test:e2e
 
 # test coverage
 $ npm run test:cov
+
+# En docker:
+$ docker ps (selecciona id de contenedor)
+$ docker exec -it [id]  sh 
+$ npm run test
 ```
+
+### En docker:
 
 ## Database
 
@@ -68,7 +75,7 @@ $ npx sequelize-cli migration:generate --name create-books
 $ npx sequelize-cli seed:generate --name seed-books
 ```
 
-# Run migrations and seeds: ???????
+# Run migrations and seeds: (Esta opción no fue totalmente configurada)
 
 ```bash
 $ docker exec -it backend sh -c "npx sequelize-cli db:migrate"

@@ -66,8 +66,10 @@ Se tienen dos gráficos de productos:
 - El género puede corresponder a un set definido de opciones como: no ficción, ficción, tecnología, historia, otros.
 
 Los libros son obtenidos por medio de endpoints, desde el backend.
-![Graficos](img1.png)
-![Tabla](img2.png)
+![Login](img1.png)
+![Litado de libros filtrado por disponibilidad](img2.png)
+![Edición](img3.png)
+![Listado de libros](img4.png)
 
 ## Documentación utilizada
 
